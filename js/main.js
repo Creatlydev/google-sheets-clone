@@ -1,18 +1,27 @@
+// Selector helper function
 const $ = (el, all = false) =>
   all ? document.querySelectorAll(el) : document.querySelector(el)
 
+// DOM elements
 const $cheetContainer = $('.sheet-container')
 const $headerRowTop = $('.header-row--top')
 const $headerRowLeft = $('.header-row--left')
 const $bodySheet = $('.body-sheet')
 
+// Grid dimensions
 const cols = $cheetContainer.dataset.cols
 const rows = $cheetContainer.dataset.rows
 $cheetContainer.style.setProperty('--cols', cols)
 $cheetContainer.style.setProperty('--rows', rows)
 
+// Track the currently editable cell
 let currentCellEditable = null
 
+/**
+ * Convert a number to a column label (e.g., 0 -> A, 1 -> B)
+ * @param {number} n - The column number
+ * @returns {string} - The column label
+ */
 function numberToColumn(n) {
   let column = ''
   while (n >= 0) {
@@ -22,6 +31,10 @@ function numberToColumn(n) {
   return column
 }
 
+/**
+ * Create header rows for the spreadsheet
+ * @param {string} position - 'top' for column headers, 'left' for row headers
+ */
 function createHeaderRow(position = 'top') {
   for (let i = 0; i < cols; i++) {
     const headerCell = document.createElement('div')
@@ -30,13 +43,19 @@ function createHeaderRow(position = 'top') {
     headerCell.setAttribute('aria-label', content)
     headerCell.textContent = content
 
-    // Agregar al header row
-    position === 'top'
-      ? $headerRowTop.appendChild(headerCell)
-      : $headerRowLeft.appendChild(headerCell)
+    // Add header cell to appropriate header row
+    if (position === 'top') {
+      $headerRowTop.appendChild(headerCell)
+    } else {
+      $headerRowLeft.appendChild(headerCell)
+    }
   }
 }
 
+/**
+ * Highlight header cells corresponding to the selected cell
+ * @param {Object} event - The event object
+ */
 function highlighHeaderCell({ target }) {
   const row = target.getAttribute('label-header-row')
   const col = target.getAttribute('label-header-col')
@@ -54,6 +73,9 @@ function highlighHeaderCell({ target }) {
   $rowHeader.classList.add('is-highlight')
 }
 
+/**
+ * Create the body of the spreadsheet
+ */
 function createBodySheet() {
   createHeaderRow()
   createHeaderRow('left')
@@ -74,13 +96,20 @@ function createBodySheet() {
   }
 }
 
+/**
+ * Remove the contenteditable attribute from the currently editable cell
+ * @param {HTMLElement} cell - The cell to make non-editable
+ */
 const removeEditable = (cell) => {
   if (currentCellEditable && currentCellEditable !== cell) {
-    currentCellEditable?.removeAttribute('contenteditable')
+    currentCellEditable.removeAttribute('contenteditable')
   }
 }
 
-// Función para hacer una celda editable
+/**
+ * Make a cell editable
+ * @param {HTMLElement} cell - The cell to make editable
+ */
 function makeCellEditable(cell) {
   removeEditable(cell)
 
@@ -90,6 +119,10 @@ function makeCellEditable(cell) {
   currentCellEditable = cell
 }
 
+/**
+ * Highlight the cell and corresponding headers when clicked
+ * @param {HTMLElement} target - The clicked cell
+ */
 const highlightCellInput = (target) => {
   if (target.getAttribute('role') === 'input') {
     highlighHeaderCell({ target })
@@ -97,11 +130,13 @@ const highlightCellInput = (target) => {
   }
 }
 
+// Event listener for single click on body cells
 $bodySheet.addEventListener('click', (event) => {
   const target = event.target
   highlightCellInput(target)
 })
 
+// Event listener for double click on body cells to make them editable
 $bodySheet.addEventListener('dblclick', (event) => {
   const target = event.target
   if (target.getAttribute('role') === 'input') {
@@ -109,24 +144,34 @@ $bodySheet.addEventListener('dblclick', (event) => {
   }
 })
 
+/**
+ * Check if a cell is currently editable
+ * @param {HTMLElement} cell - The cell to check
+ * @returns {boolean} - True if the cell is editable, false otherwise
+ */
 const isEditable = (cell) => {
-  if (cell.getAttribute('contenteditable') === 'true') return true
-  return false
+  return cell.getAttribute('contenteditable') === 'true'
 }
 
+// Event listener for keydown events in body cells
 $bodySheet.addEventListener('keydown', (event) => {
+  const target = event.target
+
   if (event.key === 'Enter') {
     event.preventDefault()
-    if (isEditable(event.target)) {
-      // Logica para cuando la celda sea editable y se de enter otra vez, el foco se pase a la celda posterior siguiente
+    if (isEditable(target)) {
+      // Logic to move focus to the next cell when Enter is pressed in an editable cell
     } else {
-      makeCellEditable(event.target)
+      makeCellEditable(target)
     }
   }
 
   if (event.key === 'Delete' || event.key === 'Backspace') {
-    if (!isEditable(event.target)) event.target.textContent = ''
+    if (!isEditable(target)) {
+      target.textContent = ''
+    }
   }
 })
 
+// Initialize the spreadsheet
 createBodySheet()
