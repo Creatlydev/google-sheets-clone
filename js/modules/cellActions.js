@@ -4,12 +4,15 @@ import {
   setCurrentEditableCell
 } from './globalState.js'
 import { highlightHeaderCell } from './header.js'
+import { $ } from './domUtils.js'
 
 // Hace una celda editable
 export const enableCellEditing = (cell) => {
   setDomEditableCell(cell)
   setCurrentEditableCell(cell)
 }
+
+const addClassCell = (cell) => cell.classList.add('is-active')
 
 // Verifica si una celda es editable
 export const isCellEditable = (cell) =>
@@ -18,6 +21,8 @@ export const isCellEditable = (cell) =>
 // Resalta la celda de entrada seleccionada y elimina la edición de otras celdas
 export const highlightInputCell = (target) => {
   if (target.getAttribute('role') === 'input') {
+    $('.cell.is-active')?.classList.remove('is-active')
+    addClassCell(target)
     highlightHeaderCell({ target })
     disableCellEditing(target)
   }
