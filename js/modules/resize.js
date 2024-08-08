@@ -1,8 +1,20 @@
 let currentResizer
 let modifying
 let startX, startY, startWidth, startHeight
+let sizesCells = {}
 
-export const startResizing = (event, {modified= 'columns'}) => {
+window.addEventListener('DOMContentLoaded', () => {
+  let $headerCells = document.querySelectorAll('.header-cell')
+  $headerCells.forEach((headerCell) => {
+    let identifier = headerCell.getAttribute('aria-label')
+    sizesCells[identifier] =
+      (isNaN(identifier)
+        ? headerCell.getBoundingClientRect().width
+        : headerCell.getBoundingClientRect().height) + 'px'
+  })
+})
+
+export const startResizing = (event, { modified = 'columns' }) => {
   currentResizer = event.target
   modifying = modified
 
@@ -31,7 +43,7 @@ const resize = (event) => {
     updateGridTemplateColumns()
   } else {
     currentResizer.parentNode.style.height = `${newHeight}px`
-    updateGridTemplateColumns(('rows'))
+    updateGridTemplateColumns('rows')
   }
 }
 

@@ -28,6 +28,7 @@ export const createHeaderRow = (range, position = 'top') => {
 
     const resizer = document.createElement('div')
     resizer.classList.add('resizer')
+    resizer.setAttribute('identifier', content)
     headerCell.appendChild(resizer)
   }
 }
