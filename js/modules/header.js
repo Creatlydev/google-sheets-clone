@@ -25,6 +25,10 @@ export const createHeaderRow = (range, position = 'top') => {
     position === 'top'
       ? $headerRowTop.appendChild(headerCell)
       : $headerRowLeft.appendChild(headerCell)
+
+    const resizer = document.createElement('div')
+    resizer.classList.add('resizer')
+    headerCell.appendChild(resizer)
   }
 }
 

@@ -63,6 +63,69 @@ body {
     position: relative;
 }
 
+.resizer {
+    position: absolute;
+    width: 16px;
+    height: 100%;
+    top: 0;
+    right: -8px;
+    z-index: 10;
+    cursor: col-resize;
+    opacity: 0;
+    transition: opacity 200ms;
+}
+
+.resizer:hover {
+    opacity: 1;
+}
+
+.resizer::before,
+.resizer::after {
+    background-color: #202020;
+    content: '';
+    position: absolute;
+    width: 3px;
+    top: 3px;
+    bottom: 3px;
+    border-radius: 4px;
+}
+
+.resizer::after {
+    right: 0;
+}
+
+.header-row--left .resizer {
+    cursor: row-resize;
+    width: unset;
+    right: 40%;
+    left: 40%;
+    height: 10px;
+    top: unset;
+    bottom: -6px;
+}
+
+.header-row--left .resizer::before,
+.header-row--left .resizer::after {
+    background-color: #202020;
+    width: unset;
+    height: 2px;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-radius: 4px;
+}
+
+.header-row--left .resizer::after {
+    top: unset;
+    bottom: 0;
+}
+
+
+
+.header-cell:last-child .resizer {
+    display: none;
+}
+
 .header-cell.is-highlight {
     background-color: #d3e3fd;
 }
