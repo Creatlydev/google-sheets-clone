@@ -1,16 +1,16 @@
 let currentResizer
+let modifying
 let startX, startY, startWidth, startHeight
 
-export const startResizing = (event) => {
+export const startResizing = (event, {modified= 'columns'}) => {
   currentResizer = event.target
+  modifying = modified
 
   // Guardar el tamaño y la posición inicial
   startX = event.clientX
   startY = event.clientY
   startWidth = parseFloat(getComputedStyle(currentResizer.parentNode).width)
   startHeight = parseFloat(getComputedStyle(currentResizer.parentNode).height)
-  console.log(startWidth)
-  console.log(startHeight)
 
   // Agregar eventos para mover y terminar el redimensionamiento
   currentResizer.addEventListener('mousemove', resize)
@@ -25,13 +25,14 @@ const resize = (event) => {
   const newHeight = startHeight + (event.clientY - startY)
 
   // Aplicar el nuevo tamaño
-  if (currentResizer.parentNode.classList.contains('header-cell')) {
+
+  if (modifying === 'columns') {
     currentResizer.parentNode.style.width = `${newWidth}px`
+    updateGridTemplateColumns()
   } else {
     currentResizer.parentNode.style.height = `${newHeight}px`
+    updateGridTemplateColumns(('rows'))
   }
-
-  updateGridTemplateColumns()
 }
 
 const stopResizing = () => {
@@ -45,10 +46,20 @@ const updateGridTemplateColumns = () => {
     .closest('.header-row')
     .querySelectorAll('.header-cell')
 
-  const columnSizes = Array.from(headerCells).map((headerCell) => {
-    return headerCell.getBoundingClientRect().width + 'px'
+  const gridSizes = Array.from(headerCells).map((headerCell) => {
+    if (modifying === 'columns') {
+      return headerCell.getBoundingClientRect().width + 'px'
+    }
+
+    return headerCell.getBoundingClientRect().height + 'px'
   })
 
+  const nameProperty =
+    modifying === 'columns' ? '--grid-columns' : '--grid-rows'
   // 4. Actualizar el grid-template-columns en el contenedor de la cuadrícula
-  currentResizer.closest('.sheet-container').style.setProperty('--grid-columns', columnSizes.join(' '))
+  currentResizer
+    .closest('.sheet-container')
+    .style.setProperty(nameProperty, gridSizes.join(' '))
 }
+
+const updateGridTemplateRows = () => {}

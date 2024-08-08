@@ -45,7 +45,13 @@ export const initializeEventHandlers = () => {
   $headerRowTop.addEventListener('click', (event) => {
     const target = event.target
     if (target?.classList.contains('resizer')) {
-      startResizing(event)
+      startResizing(event, {modified: 'columns'})
+    }
+  })
+  $headerRowLeft.addEventListener('click', (event) => {
+    const target = event.target
+    if (target?.classList.contains('resizer')) {
+      startResizing(event, {modified: 'rows'})
     }
   })
 }
