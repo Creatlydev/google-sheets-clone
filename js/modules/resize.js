@@ -1,6 +1,7 @@
 let currentResizer
 let modifying
 let startX, startY, startWidth, startHeight
+let getGridTemplateValues
 let sizesCells = {}
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -12,6 +13,22 @@ window.addEventListener('DOMContentLoaded', () => {
         ? headerCell.getBoundingClientRect().width
         : headerCell.getBoundingClientRect().height) + 'px'
   })
+  getGridTemplateValues = () => {
+    const columns = []
+    const rows = []
+
+    Object.entries(sizesCells).forEach(([key, value]) => {
+      if (isNaN(key)) {
+        // Claves que no son números (columnas)
+        columns.push(value)
+      } else {
+        // Claves que son números (filas)
+        rows.push(value)
+      }
+    })
+
+    return { columns: columns.join(' '), rows: rows.join(' ') }
+  }
 })
 
 export const startResizing = (event, { modified = 'columns' }) => {
