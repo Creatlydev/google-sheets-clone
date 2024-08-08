@@ -30,7 +30,7 @@ const createBodySheet = () => {
   }
 }
 
-createHeaderRow(cols, rows)
-createHeaderRow(cols, rows, 'left')
+createHeaderRow(cols)
+createHeaderRow(rows, 'left')
 createBodySheet()
 initializeEventHandlers()

@@ -1,10 +1,10 @@
-// cellActions.js
 import {
   getCurrentEditableCell,
-  setCurrentEditableCell
+  setCurrentEditableCell,
+  getCurrentActiveCell,
+  setCurrentActiveCell
 } from './globalState.js'
 import { highlightHeaderCell } from './header.js'
-import { $ } from './domUtils.js'
 
 // Hace una celda editable
 export const enableCellEditing = (cell) => {
@@ -19,12 +19,17 @@ export const isCellEditable = (cell) =>
   cell.getAttribute('contenteditable') === 'true'
 
 // Resalta la celda de entrada seleccionada y elimina la edición de otras celdas
-export const highlightInputCell = (target) => {
-  if (target.getAttribute('role') === 'input') {
-    $('.cell.is-active')?.classList.remove('is-active')
-    addClassCell(target)
-    highlightHeaderCell({ target })
-    disableCellEditing(target)
+export const highlightInputCell = (cell) => {
+  if (cell.getAttribute('role') === 'input') {
+    const currentActiveCell = getCurrentActiveCell()
+    if (currentActiveCell !== cell) {
+      currentActiveCell && currentActiveCell.classList.remove('is-active')
+      addClassCell(cell)
+      highlightHeaderCell({ target: cell })
+      disableCellEditing(cell)
+
+      setCurrentActiveCell(cell)
+    }
   }
 }
 

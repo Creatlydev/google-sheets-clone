@@ -10,7 +10,7 @@ import { $ } from './domUtils.js'
 export const initializeEventHandlers = () => {
   const $bodySheet = $('.body-sheet')
 
-  $bodySheet.addEventListener('click', (event) => {
+  $bodySheet.addEventListener('mousedown', (event) => {
     const target = event.target
     highlightInputCell(target)
   })

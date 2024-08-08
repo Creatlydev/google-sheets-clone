@@ -1,4 +1,3 @@
-// header.js
 import { $ } from './domUtils.js'
 
 // Convierte un número a la correspondiente letra de columna
@@ -12,11 +11,11 @@ export const numberToColumn = (n) => {
 }
 
 // Crea la fila de encabezado para columnas o filas
-export const createHeaderRow = (cols, rows, position = 'top') => {
+export const createHeaderRow = (range, position = 'top') => {
   const $headerRowTop = $('.header-row--top')
   const $headerRowLeft = $('.header-row--left')
 
-  for (let i = 0; i < cols; i++) {
+  for (let i = 0; i < range; i++) {
     const headerCell = document.createElement('div')
     headerCell.classList.add('header-cell')
     const content = position === 'top' ? numberToColumn(i) : i + 1
