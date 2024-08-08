@@ -20,6 +20,7 @@ body {
 }
 
 .sheet-container {
+    --grid-columns: repeat(var(--cols), 100px);
     width: max-content;
     display: grid;
     grid-template-columns: 56px 1fr;
@@ -31,7 +32,7 @@ body {
     top: 0;
     grid-column-start: 2;
     display: grid;
-    grid-template-columns: repeat(var(--cols), 100px);
+    grid-template-columns: var(--grid-columns);
 }
 
 .header-row--left {
@@ -61,6 +62,7 @@ body {
     display: grid;
     place-items: center;
     position: relative;
+    min-width: fit-content;
 }
 
 .resizer {
@@ -133,7 +135,7 @@ body {
 
 .body-sheet {
     display: grid;
-    grid-template-columns: repeat(var(--cols), 100px);
+    grid-template-columns: var(--grid-columns);
     grid-template-rows: repeat(var(--rows), 24px);
     grid-row-start: 2;
     grid-column-start: 2;

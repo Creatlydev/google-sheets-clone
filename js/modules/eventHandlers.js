@@ -6,9 +6,12 @@ import {
   highlightInputCell
 } from './cellActions.js'
 import { $ } from './domUtils.js'
+import { startResizing } from './resize.js'
 
 export const initializeEventHandlers = () => {
   const $bodySheet = $('.body-sheet')
+  const $headerRowTop = $('.header-row--top')
+  const $headerRowLeft = $('.header-row--left')
 
   $bodySheet.addEventListener('mousedown', (event) => {
     const target = event.target
@@ -35,6 +38,14 @@ export const initializeEventHandlers = () => {
 
     if (event.key === 'Delete' || event.key === 'Backspace') {
       if (!isCellEditable(target)) clearCellContent(target)
+    }
+  })
+
+
+  $headerRowTop.addEventListener('click', (event) => {
+    const target = event.target
+    if (target?.classList.contains('resizer')) {
+      startResizing(event)
     }
   })
 }
