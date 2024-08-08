@@ -1,8 +1,8 @@
 // globalState.js
 let currentCellEditable = null
 
-export const getCurrentCellEditable = () => currentCellEditable
+export const getCurrentEditableCell = () => currentCellEditable
 
-export const setCurrentCellEditable = (cell) => {
+export const setCurrentEditableCell = (cell) => {
   currentCellEditable = cell
 }

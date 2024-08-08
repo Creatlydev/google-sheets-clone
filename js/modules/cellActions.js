@@ -1,37 +1,44 @@
 // cellActions.js
 import {
-  getCurrentCellEditable,
-  setCurrentCellEditable
+  getCurrentEditableCell,
+  setCurrentEditableCell
 } from './globalState.js'
+import { highlightHeaderCell } from './header.js'
 
-export const makeCellEditable = (cell) => {
-
-  domSetCurrentCellEditable(cell)
-  setCurrentCellEditable(cell)
+// Hace una celda editable
+export const enableCellEditing = (cell) => {
+  setDomEditableCell(cell)
+  setCurrentEditableCell(cell)
 }
 
-export const isEditable = (cell) =>
+// Verifica si una celda es editable
+export const isCellEditable = (cell) =>
   cell.getAttribute('contenteditable') === 'true'
 
-export const highlightCellInput = (target) => {
+// Resalta la celda de entrada seleccionada y elimina la edición de otras celdas
+export const highlightInputCell = (target) => {
   if (target.getAttribute('role') === 'input') {
-    removeEditable(target)
+    highlightHeaderCell({ target })
+    disableCellEditing(target)
   }
 }
 
-export const domSetCurrentCellEditable = (cell) => {
+// Establece una celda como editable en el DOM
+export const setDomEditableCell = (cell) => {
   cell.setAttribute('contenteditable', 'true')
   cell.focus()
 }
 
-export const removeEditable = (cell) => {
-  const currentCellEditable = getCurrentCellEditable()
+// Elimina la edición de una celda y asegura que no haya otras celdas editables
+export const disableCellEditing = (cell) => {
+  const currentEditableCell = getCurrentEditableCell()
 
-  if (currentCellEditable && currentCellEditable !== cell) {
-    currentCellEditable.removeAttribute('contenteditable')
+  if (currentEditableCell && currentEditableCell !== cell) {
+    currentEditableCell.removeAttribute('contenteditable')
   }
 }
 
+// Limpia el contenido de una celda
 export const clearCellContent = (cell) => {
   cell.textContent = ''
 }

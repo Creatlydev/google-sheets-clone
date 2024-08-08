@@ -1,6 +1,7 @@
 // header.js
 import { $ } from './domUtils.js'
 
+// Convierte un número a la correspondiente letra de columna
 export const numberToColumn = (n) => {
   let column = ''
   while (n >= 0) {
@@ -10,6 +11,7 @@ export const numberToColumn = (n) => {
   return column
 }
 
+// Crea la fila de encabezado para columnas o filas
 export const createHeaderRow = (cols, rows, position = 'top') => {
   const $headerRowTop = $('.header-row--top')
   const $headerRowLeft = $('.header-row--left')
@@ -17,7 +19,7 @@ export const createHeaderRow = (cols, rows, position = 'top') => {
   for (let i = 0; i < cols; i++) {
     const headerCell = document.createElement('div')
     headerCell.classList.add('header-cell')
-    let content = position === 'top' ? numberToColumn(i) : i + 1
+    const content = position === 'top' ? numberToColumn(i) : i + 1
     headerCell.setAttribute('aria-label', content)
     headerCell.textContent = content
 
@@ -27,10 +29,12 @@ export const createHeaderRow = (cols, rows, position = 'top') => {
   }
 }
 
-export const highlighHeaderCell = ({ target }) => {
-  const row = target.getAttribute('label-header-row')
-  const col = target.getAttribute('label-header-col')
+// Resalta la celda de encabezado correspondiente a la celda seleccionada
+export const highlightHeaderCell = ({ target }) => {
+  const rowLabel = target.getAttribute('label-header-row')
+  const colLabel = target.getAttribute('label-header-col')
 
+  // Eliminar resaltado de encabezados anteriores
   $('.header-row--top > .header-cell.is-highlight')?.classList.remove(
     'is-highlight'
   )
@@ -38,8 +42,9 @@ export const highlighHeaderCell = ({ target }) => {
     'is-highlight'
   )
 
-  const $colHeader = $(`.header-cell[aria-label='${col}']`)
-  const $rowHeader = $(`.header-cell[aria-label='${row}']`)
-  $colHeader.classList.add('is-highlight')
+  // Resaltar encabezado de columna y fila correspondientes
+  const $columnHeader = $(`.header-cell[aria-label='${colLabel}']`)
+  const $rowHeader = $(`.header-cell[aria-label='${rowLabel}']`)
+  $columnHeader.classList.add('is-highlight')
   $rowHeader.classList.add('is-highlight')
 }

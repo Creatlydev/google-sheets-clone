@@ -1,26 +1,24 @@
 // eventHandlers.js
 import {
-  makeCellEditable,
-  isEditable,
+  enableCellEditing,
+  isCellEditable,
   clearCellContent,
-  highlightCellInput
+  highlightInputCell
 } from './cellActions.js'
 import { $ } from './domUtils.js'
-import { highlighHeaderCell } from './header.js'
 
 export const initializeEventHandlers = () => {
   const $bodySheet = $('.body-sheet')
 
   $bodySheet.addEventListener('click', (event) => {
     const target = event.target
-    highlighHeaderCell({ target })
-    highlightCellInput(target)
+    highlightInputCell(target)
   })
 
   $bodySheet.addEventListener('dblclick', (event) => {
     const target = event.target
     if (target.getAttribute('role') === 'input') {
-      makeCellEditable(target)
+      enableCellEditing(target)
     }
   })
 
@@ -28,15 +26,15 @@ export const initializeEventHandlers = () => {
     const target = event.target
     if (event.key === 'Enter') {
       event.preventDefault()
-      if (isEditable(target)) {
+      if (isCellEditable(target)) {
         // Lógica para cuando la celda sea editable y se presione Enter otra vez
       } else {
-        makeCellEditable(target)
+        enableCellEditing(target)
       }
     }
 
     if (event.key === 'Delete' || event.key === 'Backspace') {
-      if (!isEditable(target)) clearCellContent(target)
+      if (!isCellEditable(target)) clearCellContent(target)
     }
   })
 }
