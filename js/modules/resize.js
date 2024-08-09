@@ -2,6 +2,23 @@ let currentResizer
 let modifying
 let startX, startY, startWidth, startHeight
 
+// =================================================================================================
+let sizeColumns = []
+let sizeRows = []
+
+window.addEventListener('DOMContentLoaded', () => {
+  let $headerCells = document.querySelectorAll('.header-cell')
+  $headerCells.forEach((headerCell) => {
+    let identifier = headerCell.getAttribute('aria-label')
+    if (isNaN(identifier)) {
+      sizeColumns.push(headerCell.getBoundingClientRect().width + 'px')
+    } else {
+      sizeRows.push(headerCell.getBoundingClientRect().height + 'px')
+    }
+  })
+})
+// =================================================================================================
+
 export const startResizing = (event, { modified = 'columns' }) => {
   currentResizer = event.target
   modifying = modified
@@ -25,7 +42,6 @@ const resize = (event) => {
   const newWidth = startWidth + (event.clientX - startX)
   const newHeight = startHeight + (event.clientY - startY)
 
-
   if (modifying === 'columns') {
     currentResizer.parentNode.style.width = `${newWidth}px`
     updateGridTemplateColumns()
@@ -45,17 +61,17 @@ const stopResizing = () => {
 
 // Define the function to update grid-template-columns
 const updateGridTemplateColumns = () => {
-  const headerCells = currentResizer
-    .closest('.header-row')
-    .querySelectorAll('.header-cell')
+  let gridSizes
 
-  const gridSizes = Array.from(headerCells).map((headerCell) => {
-    if (modifying === 'columns') {
-      return headerCell.getBoundingClientRect().width + 'px'
-    }
-
-    return headerCell.getBoundingClientRect().height + 'px'
-  })
+  if (modifying === 'columns') {
+    sizeColumns[currentResizer.getAttribute('order')] =
+      currentResizer.parentNode.style.width
+    gridSizes = sizeColumns
+  } else {
+    sizeRows[currentResizer.getAttribute('order')] =
+      currentResizer.parentNode.style.height
+    gridSizes = sizeRows
+  }
 
   const nameProperty =
     modifying === 'columns' ? '--grid-columns' : '--grid-rows'
