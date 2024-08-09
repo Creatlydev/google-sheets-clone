@@ -64,6 +64,7 @@ body {
     place-items: center;
     position: relative;
     min-width: fit-content;
+    min-height: 10px;
 }
 
 .resizer {
@@ -78,7 +79,8 @@ body {
     transition: opacity 200ms;
 }
 
-.resizer:hover {
+.resizer:hover,
+.resizer-hover {
     opacity: 1;
 }
 

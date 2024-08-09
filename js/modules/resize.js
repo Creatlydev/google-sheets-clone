@@ -1,35 +1,6 @@
 let currentResizer
 let modifying
 let startX, startY, startWidth, startHeight
-let getGridTemplateValues
-let sizesCells = {}
-
-window.addEventListener('DOMContentLoaded', () => {
-  let $headerCells = document.querySelectorAll('.header-cell')
-  $headerCells.forEach((headerCell) => {
-    let identifier = headerCell.getAttribute('aria-label')
-    sizesCells[identifier] =
-      (isNaN(identifier)
-        ? headerCell.getBoundingClientRect().width
-        : headerCell.getBoundingClientRect().height) + 'px'
-  })
-  getGridTemplateValues = () => {
-    const columns = []
-    const rows = []
-
-    Object.entries(sizesCells).forEach(([key, value]) => {
-      if (isNaN(key)) {
-        // Claves que no son números (columnas)
-        columns.push(value)
-      } else {
-        // Claves que son números (filas)
-        rows.push(value)
-      }
-    })
-
-    return { columns: columns.join(' '), rows: rows.join(' ') }
-  }
-})
 
 export const startResizing = (event, { modified = 'columns' }) => {
   currentResizer = event.target
@@ -40,10 +11,11 @@ export const startResizing = (event, { modified = 'columns' }) => {
   startY = event.clientY
   startWidth = parseFloat(getComputedStyle(currentResizer.parentNode).width)
   startHeight = parseFloat(getComputedStyle(currentResizer.parentNode).height)
+  currentResizer.classList.add('resizer-hover')
 
   // Agregar eventos para mover y terminar el redimensionamiento
-  currentResizer.addEventListener('mousemove', resize)
-  currentResizer.addEventListener('mouseup', stopResizing)
+  document.addEventListener('mousemove', resize)
+  document.addEventListener('mouseup', stopResizing)
 }
 
 const resize = (event) => {
@@ -53,7 +25,6 @@ const resize = (event) => {
   const newWidth = startWidth + (event.clientX - startX)
   const newHeight = startHeight + (event.clientY - startY)
 
-  // Aplicar el nuevo tamaño
 
   if (modifying === 'columns') {
     currentResizer.parentNode.style.width = `${newWidth}px`
@@ -65,8 +36,11 @@ const resize = (event) => {
 }
 
 const stopResizing = () => {
-  currentResizer.removeEventListener('mousemove', resize)
-  currentResizer.removeEventListener('mouseup', stopResizing)
+  document.removeEventListener('mousemove', resize)
+  document.removeEventListener('mouseup', stopResizing)
+
+  currentResizer.classList.remove('resizer-hover')
+  currentResizer = null
 }
 
 // Define the function to update grid-template-columns
@@ -90,5 +64,3 @@ const updateGridTemplateColumns = () => {
     .closest('.sheet-container')
     .style.setProperty(nameProperty, gridSizes.join(' '))
 }
-
-const updateGridTemplateRows = () => {}
