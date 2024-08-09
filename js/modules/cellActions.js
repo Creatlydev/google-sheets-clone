@@ -5,7 +5,7 @@ import {
   setCurrentActiveCell
 } from './globalState.js'
 import { highlightHeaderCell } from './header.js'
-import { $ } from './domUtils.js'
+import { $ } from '../utils/domUtils.js'
 
 // Hace una celda editable
 export const enableCellEditing = (cell) => {

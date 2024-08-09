@@ -63,8 +63,7 @@ body {
     display: grid;
     place-items: center;
     position: relative;
-    min-width: fit-content;
-    min-height: 10px;
+    user-select: none;
 }
 
 .resizer {
@@ -123,12 +122,6 @@ body {
 .header-row--left .resizer::after {
     top: unset;
     bottom: 0;
-}
-
-
-
-.header-cell:last-child .resizer {
-    display: none;
 }
 
 .header-cell.is-highlight {

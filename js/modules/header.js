@@ -1,4 +1,4 @@
-import { $ } from './domUtils.js'
+import { $ } from '../utils/domUtils.js'
 
 // Convierte un número a la correspondiente letra de columna
 export const numberToColumn = (n) => {

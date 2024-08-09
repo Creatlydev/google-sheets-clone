@@ -1,12 +1,11 @@
 // main.js
 import { createHeaderRow, numberToColumn } from './modules/header.js'
 import { initializeEventHandlers } from './modules/eventHandlers.js'
-import { $ } from './modules/domUtils.js'
+import { $ } from './utils/domUtils.js'
 
 const $cheetContainer = $('.sheet-container')
 const cols = $cheetContainer.dataset.cols
 const rows = $cheetContainer.dataset.rows
-
 
 $cheetContainer.style.setProperty('--cols', cols)
 $cheetContainer.style.setProperty('--rows', rows)

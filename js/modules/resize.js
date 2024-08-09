@@ -41,6 +41,8 @@ const resize = (event) => {
   // Calcular el nuevo tamaño basado en el movimiento del mouse
   const newWidth = startWidth + (event.clientX - startX)
   const newHeight = startHeight + (event.clientY - startY)
+  if (newWidth < 12) newWidth = 12
+  else if (newHeight < 12) newHeight = 12
 
   if (modifying === 'columns') {
     currentResizer.parentNode.style.width = `${newWidth}px`

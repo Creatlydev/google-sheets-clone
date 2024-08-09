@@ -6,7 +6,7 @@ import {
   highlightInputCell,
   moveFocusToNextCellOnEnter
 } from './cellActions.js'
-import { $ } from './domUtils.js'
+import { $ } from '../utils/domUtils.js'
 import { startResizing } from './resize.js'
 
 export const initializeEventHandlers = () => {
