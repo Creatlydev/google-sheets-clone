@@ -1,10 +1,10 @@
-// eventHandlers.js
 import {
   enableCellEditing,
   isCellEditable,
   clearCellContent,
   highlightInputCell,
-  moveFocusToNextCellOnEnter
+  moveFocusToNextCellOnEnter,
+  disableCellEditing
 } from './cellActions.js'
 import { $ } from '../utils/domUtils.js'
 import { startResizing } from './resize.js'
@@ -25,7 +25,7 @@ export const initializeEventHandlers = () => {
     if (target && target.getAttribute('role') === ROLE_INPUT) {
       highlightInputCell(target)
     } else {
-      highlightInputCell(event.target, false)
+      disableCellEditing(event.target, {force: true})
     }
   })
 
