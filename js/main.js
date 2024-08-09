@@ -2,6 +2,7 @@
 import { createHeaderRow, numberToColumn } from './modules/header.js'
 import { initializeEventHandlers } from './modules/eventHandlers.js'
 import { $ } from './utils/domUtils.js'
+import { ROLE_INPUT } from './utils/constants.js'
 
 const $cheetContainer = $('.sheet-container')
 const cols = $cheetContainer.dataset.cols
@@ -24,7 +25,7 @@ const createBodySheet = () => {
     cell.setAttribute('label-header-row', row)
     cell.setAttribute('label-header-col', col)
     cell.setAttribute('aria-label', ariaLabel)
-    cell.setAttribute('role', 'input')
+    cell.setAttribute('role', ROLE_INPUT)
     $bodySheet.appendChild(cell)
   }
 }

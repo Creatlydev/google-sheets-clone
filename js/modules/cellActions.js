@@ -6,6 +6,7 @@ import {
 } from './globalState.js'
 import { highlightHeaderCell } from './header.js'
 import { $ } from '../utils/domUtils.js'
+import { ROLE_INPUT } from '../utils/constants.js'
 
 // Hace una celda editable
 export const enableCellEditing = (cell) => {
@@ -21,7 +22,7 @@ export const isCellEditable = (cell) =>
 
 // Resalta la celda de entrada seleccionada y elimina la edición de otras celdas
 export const highlightInputCell = (cell, focusInIsCell = true) => {
-  if (cell.getAttribute('role') === 'input') {
+  if (cell.getAttribute('role') === ROLE_INPUT) {
     const currentActiveCell = getCurrentActiveCell()
     if (currentActiveCell !== cell) {
       currentActiveCell && currentActiveCell.classList.remove('is-active')

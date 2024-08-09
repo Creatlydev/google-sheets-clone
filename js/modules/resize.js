@@ -39,8 +39,8 @@ const resize = (event) => {
   if (!currentResizer) return
 
   // Calcular el nuevo tamaño basado en el movimiento del mouse
-  const newWidth = startWidth + (event.clientX - startX)
-  const newHeight = startHeight + (event.clientY - startY)
+  let newWidth = startWidth + (event.clientX - startX)
+  let newHeight = startHeight + (event.clientY - startY)
   if (newWidth < 12) newWidth = 12
   else if (newHeight < 12) newHeight = 12
 

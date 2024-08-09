@@ -8,6 +8,7 @@ import {
 } from './cellActions.js'
 import { $ } from '../utils/domUtils.js'
 import { startResizing } from './resize.js'
+import { ROLE_INPUT } from '../utils/constants.js'
 
 export const initializeEventHandlers = () => {
   const $bodySheet = $('.body-sheet')
@@ -21,7 +22,7 @@ export const initializeEventHandlers = () => {
 
   $bodySheet.addEventListener('focusout', (event) => {
     const target = event.relatedTarget
-    if (target && target.getAttribute('role') === 'input') {
+    if (target && target.getAttribute('role') === ROLE_INPUT) {
       highlightInputCell(target)
     } else {
       highlightInputCell(event.target, false)
@@ -30,7 +31,7 @@ export const initializeEventHandlers = () => {
 
   $bodySheet.addEventListener('dblclick', (event) => {
     const target = event.target
-    if (target.getAttribute('role') === 'input') {
+    if (target.getAttribute('role') === ROLE_INPUT) {
       enableCellEditing(target)
     }
   })
