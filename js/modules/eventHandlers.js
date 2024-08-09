@@ -3,7 +3,8 @@ import {
   enableCellEditing,
   isCellEditable,
   clearCellContent,
-  highlightInputCell
+  highlightInputCell,
+  moveFocusToNextCellOnEnter
 } from './cellActions.js'
 import { $ } from './domUtils.js'
 import { startResizing } from './resize.js'
@@ -16,6 +17,15 @@ export const initializeEventHandlers = () => {
   $bodySheet.addEventListener('mousedown', (event) => {
     const target = event.target
     highlightInputCell(target)
+  })
+
+  $bodySheet.addEventListener('focusout', (event) => {
+    const target = event.relatedTarget
+    if (target && target.getAttribute('role') === 'input') {
+      highlightInputCell(target)
+    } else {
+      highlightInputCell(event.target, false)
+    }
   })
 
   $bodySheet.addEventListener('dblclick', (event) => {
@@ -31,6 +41,7 @@ export const initializeEventHandlers = () => {
       event.preventDefault()
       if (isCellEditable(target)) {
         // Lógica para cuando la celda sea editable y se presione Enter otra vez
+        moveFocusToNextCellOnEnter(target)
       } else {
         enableCellEditing(target)
       }
@@ -41,17 +52,21 @@ export const initializeEventHandlers = () => {
     }
   })
 
+  $bodySheet.addEventListener('keypress', (event) => {
+    const target = event.target
+    !isCellEditable(target) && enableCellEditing(target)
+  })
 
   $headerRowTop.addEventListener('mousedown', (event) => {
     const target = event.target
     if (target?.classList.contains('resizer')) {
-      startResizing(event, {modified: 'columns'})
+      startResizing(event, { modified: 'columns' })
     }
   })
   $headerRowLeft.addEventListener('mousedown', (event) => {
     const target = event.target
     if (target?.classList.contains('resizer')) {
-      startResizing(event, {modified: 'rows'})
+      startResizing(event, { modified: 'rows' })
     }
   })
 }

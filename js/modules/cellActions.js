@@ -5,6 +5,7 @@ import {
   setCurrentActiveCell
 } from './globalState.js'
 import { highlightHeaderCell } from './header.js'
+import { $ } from './domUtils.js'
 
 // Hace una celda editable
 export const enableCellEditing = (cell) => {
@@ -19,7 +20,7 @@ export const isCellEditable = (cell) =>
   cell.getAttribute('contenteditable') === 'true'
 
 // Resalta la celda de entrada seleccionada y elimina la edición de otras celdas
-export const highlightInputCell = (cell) => {
+export const highlightInputCell = (cell, focusInIsCell= true) => {
   if (cell.getAttribute('role') === 'input') {
     const currentActiveCell = getCurrentActiveCell()
     if (currentActiveCell !== cell) {
@@ -29,6 +30,10 @@ export const highlightInputCell = (cell) => {
       disableCellEditing(cell)
 
       setCurrentActiveCell(cell)
+    }
+
+    else if (!focusInIsCell) {
+      disableCellEditing(cell, true)
     }
   }
 }
@@ -40,11 +45,29 @@ export const setDomEditableCell = (cell) => {
 }
 
 // Elimina la edición de una celda y asegura que no haya otras celdas editables
-export const disableCellEditing = (cell) => {
+export const disableCellEditing = (cell, force= false) => {
   const currentEditableCell = getCurrentEditableCell()
 
-  if (currentEditableCell && currentEditableCell !== cell) {
+  if (currentEditableCell && currentEditableCell !== cell || force) {
     currentEditableCell.removeAttribute('contenteditable')
+  }
+}
+
+export const moveFocusToNextCellOnEnter = (cell) => {
+  const currentActiveCell = getCurrentActiveCell()
+  const ariaLabelCurrentCellActive =
+    cell.getAttribute('label-header-col') +
+    (parseInt(cell.getAttribute('label-header-row')) + 1)
+  let nextCell = $(`.cell[aria-label="${ariaLabelCurrentCellActive}"]`)
+  
+  if (nextCell) {
+    currentActiveCell.classList.remove('is-active')
+    addClassCell(nextCell)
+    highlightHeaderCell({target: nextCell})
+    disableCellEditing(nextCell)
+    setCurrentActiveCell(nextCell)
+    nextCell.focus()
+    
   }
 }
 
