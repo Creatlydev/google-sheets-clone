@@ -69,11 +69,7 @@ export const moveFocusToNextCellOnEnter = (cell) => {
   let nextCell = $(`.cell[aria-label="${ariaLabelNextCellActive}"]`)
 
   if (nextCell) {
-    currentActiveCell.classList.remove('is-active')
-    addClassCell(nextCell)
-    highlightHeaderCell({ target: nextCell })
-    disableCellEditing(nextCell)
-    setCurrentActiveCell(nextCell)
+    highlightInputCell(nextCell)
     nextCell.focus() // Mueve el foco a la siguiente celda
   }
 }
