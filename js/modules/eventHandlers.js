@@ -5,7 +5,8 @@ import {
   highlightInputCell,
   moveFocusToNextCellOnEnter,
   disableCellEditing,
-  moveFocusToAdjacentCell
+  moveFocusToAdjacentCell,
+  moveFocusVerticallyCell
 } from './cellActions.js'
 import { $ } from '../utils/domUtils.js'
 import { startResizing } from './resize.js'
@@ -70,6 +71,11 @@ export const initializeEventHandlers = () => {
     else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
       let direction = event.key === 'ArrowRight' ? 'right' : 'left'
       moveFocusToAdjacentCell(target, direction)
+    }
+
+    else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      let direction = event.key === 'ArrowUp' ? 'up' : 'down'
+      moveFocusVerticallyCell(target, direction)
     }
   })
 

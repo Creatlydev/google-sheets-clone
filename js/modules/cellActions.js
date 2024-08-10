@@ -97,21 +97,23 @@ export const moveFocusToAdjacentCell = (cell, direction) => {
   }
 }
 
-// Mueve el foco a la celda de la izquierda cuando se presiona ArrowLeft
-export const moveFocusToLeftCell = (cell) => {
+
+// Mueve el foco a la celda de arriba o abajo segun la direccion indicada
+export const moveFocusVerticallyCell = (cell, direction) => {
   const currentActiveCell = getCurrentActiveCell()
+  const newRow =
+    parseInt(cell.getAttribute('label-header-row')) +
+    (direction === 'down' ? +1 : -1)
 
-  // Obtiene el aria-label de la celda en la columna anterior
-  const prevCol = numberToColumn(columnToNumber(cell.getAttribute('label-header-col')) - 1)
-  const ariaLabelPrevCellActive =
-    prevCol + cell.getAttribute('label-header-row')
+  // Obtiene el aria-label de la celda en la fila correspondiente
+  const ariaLabelNextCellActive = cell.getAttribute('label-header-col') + newRow
 
-  // Busca la celda a la izquierda en el DOM
-  let prevCell = $(`.cell[aria-label="${ariaLabelPrevCellActive}"]`)
+  // Busca la siguiente celda en el DOM
+  let nextCell = $(`.cell[aria-label="${ariaLabelNextCellActive}"]`)
 
-  if (prevCell) {
-    highlightInputCell(prevCell)
-    prevCell.focus() // Mueve el foco a la celda de la izquierda
+  if (nextCell) {
+    highlightInputCell(nextCell)
+    nextCell.focus() // Mueve el foco a la siguiente celda
   }
 }
 
