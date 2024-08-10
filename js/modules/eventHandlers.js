@@ -67,6 +67,7 @@ export const initializeEventHandlers = () => {
       }
     }
 
+    // Detectar si se ha presionado algunas de las teclas de flecha y mover foco a la celda correspondiente segun la dirrecion
     else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
       let direction = event.key === 'ArrowRight' ? 'right' : 'left'
       moveFocusToAdjacentCell(target, direction)
