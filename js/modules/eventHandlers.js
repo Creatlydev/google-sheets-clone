@@ -33,7 +33,7 @@ export const initializeEventHandlers = () => {
       highlightInputCell(target)
     } else {
       // Desactiva la celda de entrada si el foco se mueve a un elemento que no es una celda
-      disableCellEditing(event.target, {force: true})
+      disableCellEditing(event.target, { force: true })
     }
   })
 
@@ -58,9 +58,7 @@ export const initializeEventHandlers = () => {
         // Habilita la edición de la celda si no es editable
         enableCellEditing(target)
       }
-    }
-
-    else if (event.key === 'Delete' || event.key === 'Backspace') {
+    } else if (event.key === 'Delete' || event.key === 'Backspace') {
       if (!isCellEditable(target)) {
         // Limpia el contenido de la celda si no es editable
         clearCellContent(target)
@@ -70,12 +68,10 @@ export const initializeEventHandlers = () => {
     // Detectar si se ha presionado algunas de las teclas de flecha y mover foco a la celda correspondiente segun la dirrecion
     else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
       let direction = event.key === 'ArrowRight' ? 'right' : 'left'
-      moveFocusToAdjacentCell(target, direction)
-    }
-
-    else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      !isCellEditable(target) && moveFocusToAdjacentCell(target, direction)
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       let direction = event.key === 'ArrowUp' ? 'up' : 'down'
-      moveFocusVerticallyCell(target, direction)
+      !isCellEditable(target) && moveFocusVerticallyCell(target, direction)
     }
   })
 

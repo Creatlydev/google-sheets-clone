@@ -34,6 +34,7 @@ body {
     grid-column-start: 2;
     display: grid;
     grid-template-columns: var(--grid-columns);
+    z-index: 2;
 }
 
 .header-row--left {
@@ -43,6 +44,7 @@ body {
     grid-template-rows: var(--grid-rows);
     position: sticky;
     left: 0;
+    z-index: 2;
 }
 
 .inner-container {
@@ -57,6 +59,7 @@ body {
 
 .header-cell {
     background-color: #f2f2f2;
+    background-color: #f4f6f8;
     font-size: .75rem;
     font-weight: 500;
     border: 1px solid #c0c0c0;
@@ -147,7 +150,9 @@ body {
     line-height: 1.5;
     text-wrap: nowrap;
     cursor: default;
-    overflow: hidden;
+    background-color: #f2f2f2;
+    position: relative;
+    /* overflow: hidden; */
 }
 
 .cell[contenteditable="true"] {
