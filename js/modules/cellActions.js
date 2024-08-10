@@ -58,24 +58,6 @@ export const disableCellEditing = (cell, { force = false } = {}) => {
   }
 }
 
-// Mueve el foco a la siguiente celda cuando se presiona Enter
-export const moveFocusToNextCellOnEnter = (cell) => {
-  const currentActiveCell = getCurrentActiveCell()
-
-  // Obtiene el aria-label de la celda en la siguiente fila
-  const ariaLabelNextCellActive =
-    cell.getAttribute('label-header-col') +
-    (parseInt(cell.getAttribute('label-header-row')) + 1)
-
-  // Busca la siguiente celda en el DOM
-  let nextCell = $(`.cell[aria-label="${ariaLabelNextCellActive}"]`)
-
-  if (nextCell) {
-    highlightInputCell(nextCell)
-    nextCell.focus() // Mueve el foco a la siguiente celda
-  }
-}
-
 // Mueve el foco a la celda de la izquierda o derecha según la dirección indicada
 export const moveFocusToAdjacentCell = (cell, direction) => {
   const currentActiveCell = getCurrentActiveCell()
@@ -96,7 +78,6 @@ export const moveFocusToAdjacentCell = (cell, direction) => {
     nextCell.focus() // Mueve el foco a la celda de la derecha
   }
 }
-
 
 // Mueve el foco a la celda de arriba o abajo segun la direccion indicada
 export const moveFocusVerticallyCell = (cell, direction) => {

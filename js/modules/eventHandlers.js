@@ -3,7 +3,6 @@ import {
   isCellEditable,
   clearCellContent,
   highlightInputCell,
-  moveFocusToNextCellOnEnter,
   disableCellEditing,
   moveFocusToAdjacentCell,
   moveFocusVerticallyCell
@@ -54,7 +53,7 @@ export const initializeEventHandlers = () => {
       event.preventDefault() // Previene el comportamiento por defecto del Enter
       if (isCellEditable(target)) {
         // Mueve el foco a la celda siguiente si la celda es editable
-        moveFocusToNextCellOnEnter(target)
+        moveFocusVerticallyCell(target, 'down')
       } else {
         // Habilita la edición de la celda si no es editable
         enableCellEditing(target)
