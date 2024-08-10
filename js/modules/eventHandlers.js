@@ -10,6 +10,7 @@ import {
 import { $ } from '../utils/domUtils.js'
 import { startResizing } from './resize.js'
 import { ROLE_INPUT } from '../utils/constants.js'
+import { finishSelectingCells, startSelectingCells } from './selectedCells.js'
 
 // Inicializa los manejadores de eventos para la hoja de cálculo
 export const initializeEventHandlers = () => {
@@ -23,6 +24,7 @@ export const initializeEventHandlers = () => {
     const target = event.target
     // Resalta la celda de entrada seleccionada
     highlightInputCell(target)
+    startSelectingCells(event)
   })
 
   // Maneja el evento focusout en la hoja de cálculo
@@ -46,6 +48,12 @@ export const initializeEventHandlers = () => {
     }
   })
 
+  // $bodySheet.addEventListener('mouseup', (event) => {
+  //   const target = event.target 
+  //   setIsSelecting(false)
+  //   finishSelectingCells(target)
+  // })
+
   // Maneja el evento keydown en la hoja de cálculo
   $bodySheet.addEventListener('keydown', (event) => {
     const target = event.target
@@ -68,9 +76,11 @@ export const initializeEventHandlers = () => {
     // Detectar si se ha presionado algunas de las teclas de flecha y mover foco a la celda correspondiente segun la dirrecion
     else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
       let direction = event.key === 'ArrowRight' ? 'right' : 'left'
+      event.preventDefault()
       !isCellEditable(target) && moveFocusToAdjacentCell(target, direction)
     } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       let direction = event.key === 'ArrowUp' ? 'up' : 'down'
+      event.preventDefault()
       !isCellEditable(target) && moveFocusVerticallyCell(target, direction)
     }
   })
