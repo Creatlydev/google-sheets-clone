@@ -1,5 +1,6 @@
 // main.js
-import { createHeaderRow, numberToColumn } from './modules/header.js'
+import { createHeaderRow } from './modules/header.js'
+import { numberToColumn } from './utils/numberToColumn.js'
 import { initializeEventHandlers } from './modules/eventHandlers.js'
 import { $ } from './utils/domUtils.js'
 import { ROLE_INPUT } from './utils/constants.js'

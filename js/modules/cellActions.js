@@ -5,6 +5,8 @@ import {
   setCurrentActiveCell
 } from './globalState.js'
 import { highlightHeaderCell } from './header.js'
+import { columnToNumber } from '../utils/columnToNumber.js'
+import { numberToColumn } from '../utils/numberToColumn.js'
 import { $ } from '../utils/domUtils.js'
 import { ROLE_INPUT } from '../utils/constants.js'
 
@@ -71,6 +73,45 @@ export const moveFocusToNextCellOnEnter = (cell) => {
   if (nextCell) {
     highlightInputCell(nextCell)
     nextCell.focus() // Mueve el foco a la siguiente celda
+  }
+}
+
+// Mueve el foco a la celda de la izquierda o derecha según la dirección indicada
+export const moveFocusToAdjacentCell = (cell, direction) => {
+  const currentActiveCell = getCurrentActiveCell()
+
+  // // Ajusta la columna según la dirección
+  const nextCol = numberToColumn(
+    columnToNumber(cell.getAttribute('label-header-col')) +
+      (direction === 'right' ? +1 : -1)
+  )
+  const ariaLabelNextCellActive =
+    nextCol + cell.getAttribute('label-header-row')
+
+  // Busca la celda a la derecha en el DOM
+  let nextCell = $(`.cell[aria-label="${ariaLabelNextCellActive}"]`)
+
+  if (nextCell) {
+    highlightInputCell(nextCell)
+    nextCell.focus() // Mueve el foco a la celda de la derecha
+  }
+}
+
+// Mueve el foco a la celda de la izquierda cuando se presiona ArrowLeft
+export const moveFocusToLeftCell = (cell) => {
+  const currentActiveCell = getCurrentActiveCell()
+
+  // Obtiene el aria-label de la celda en la columna anterior
+  const prevCol = numberToColumn(columnToNumber(cell.getAttribute('label-header-col')) - 1)
+  const ariaLabelPrevCellActive =
+    prevCol + cell.getAttribute('label-header-row')
+
+  // Busca la celda a la izquierda en el DOM
+  let prevCell = $(`.cell[aria-label="${ariaLabelPrevCellActive}"]`)
+
+  if (prevCell) {
+    highlightInputCell(prevCell)
+    prevCell.focus() // Mueve el foco a la celda de la izquierda
   }
 }
 

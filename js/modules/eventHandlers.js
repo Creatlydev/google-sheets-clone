@@ -4,7 +4,8 @@ import {
   clearCellContent,
   highlightInputCell,
   moveFocusToNextCellOnEnter,
-  disableCellEditing
+  disableCellEditing,
+  moveFocusToAdjacentCell
 } from './cellActions.js'
 import { $ } from '../utils/domUtils.js'
 import { startResizing } from './resize.js'
@@ -59,11 +60,16 @@ export const initializeEventHandlers = () => {
       }
     }
 
-    if (event.key === 'Delete' || event.key === 'Backspace') {
+    else if (event.key === 'Delete' || event.key === 'Backspace') {
       if (!isCellEditable(target)) {
         // Limpia el contenido de la celda si no es editable
         clearCellContent(target)
       }
+    }
+
+    else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      let direction = event.key === 'ArrowRight' ? 'right' : 'left'
+      moveFocusToAdjacentCell(target, direction)
     }
   })
 
