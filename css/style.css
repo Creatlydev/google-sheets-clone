@@ -129,6 +129,7 @@ body {
 
 .header-cell.is-highlight {
     background-color: #d3e3fd;
+    font-weight: 700;
 }
 
 
@@ -159,7 +160,8 @@ body {
 .wrapped-cells {
     pointer-events: none;
     position: absolute;
-    background-color: hsla(214, 82%, 51%, .5);
+    background-color: rgb(14, 101, 235);
+    opacity: .1;
 }
 
 .cell[contenteditable="true"] {

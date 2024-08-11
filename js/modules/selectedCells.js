@@ -13,34 +13,21 @@ export const startSelectingCells = (event) => {
     startY = parseFloat(boxCell.top) + window.scrollY
     finishX = event.clientX
     finishY = event.clientY
-    console.table([
-        startX, startY, finishX, finishY
-    ])
-
-    console.info('======== EVENT =======')
-    console.table([
-        event
-    ])
-    
-    console.info('======== SCROLL =======')
-    console.table([
-        window.scrollX, window.scrollY
-    ])
     
     wrappedBox = document.createElement('div')
     wrappedBox.classList.add('wrapped-cells')
 
-    console.log('Ha comenzado ha seleccionar las celdas')
     document.addEventListener('mousemove', selectingCells)
     document.addEventListener('mouseup', finishSelectingCells)
 
 }
 
 export const selectingCells = (event) => {
+    document.body.style.userSelect= 'none'
+
     if (!isSelecting) return
     document.body.appendChild(wrappedBox)
 
-    console.log('Seleccionando celdas...')
     finishX = event.pageX
     finishY = event.pageY
     let width = finishX - startX
@@ -53,8 +40,8 @@ export const selectingCells = (event) => {
 }
 
 export const finishSelectingCells = () => {
+    document.body.style.userSelect= 'unset'
     isSelecting = false
-    console.log('Ha terminado de seleccionar las celdas')
     document.removeEventListener('mousemove', selectingCells)
     document.removeEventListener('mouseup', finishSelectingCells)
 }

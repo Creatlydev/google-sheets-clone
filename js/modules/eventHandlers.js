@@ -24,7 +24,17 @@ export const initializeEventHandlers = () => {
     const target = event.target
     // Resalta la celda de entrada seleccionada
     highlightInputCell(target)
-    startSelectingCells(event)
+    !isCellEditable(target) && startSelectingCells(event)
+  })
+
+  // evento que impide el comportamiento por defecto cuando el navegador detecta que se quiere arrastrar algun elemento
+  $bodySheet.addEventListener('dragstart', (event) => {
+    event.preventDefault()
+  })
+
+  // evento para evitar poder abrir el menu contextual y que active accidentalmente el evento mousemove
+  $bodySheet.addEventListener('contextmenu', (event) => {
+    event.preventDefault()
   })
 
   // Maneja el evento focusout en la hoja de cálculo
@@ -48,12 +58,6 @@ export const initializeEventHandlers = () => {
     }
   })
 
-  // $bodySheet.addEventListener('mouseup', (event) => {
-  //   const target = event.target 
-  //   setIsSelecting(false)
-  //   finishSelectingCells(target)
-  // })
-
   // Maneja el evento keydown en la hoja de cálculo
   $bodySheet.addEventListener('keydown', (event) => {
     const target = event.target
@@ -67,10 +71,12 @@ export const initializeEventHandlers = () => {
         enableCellEditing(target)
       }
     } else if (event.key === 'Delete' || event.key === 'Backspace') {
-      if (!isCellEditable(target)) {
         // Limpia el contenido de la celda si no es editable
-        clearCellContent(target)
-      }
+        !isCellEditable(target) && clearCellContent(target)
+    }
+    
+    else if (event.ctrlKey && event.key === 'a') {
+        !isCellEditable(target) && event.preventDefault()
     }
 
     // Detectar si se ha presionado algunas de las teclas de flecha y mover foco a la celda correspondiente segun la dirrecion
