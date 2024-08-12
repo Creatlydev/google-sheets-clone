@@ -3,7 +3,7 @@ import { ROLE_INPUT } from '../utils/constants.js'
 
 // Variables globales para el manejo de la selección de celdas
 let isSelecting, initialCell, finalCell, hoveredCell
-let selectedCells = []
+let selectedCells = {}
 let selectionBox, initialCellRect
 
 /**
@@ -14,8 +14,8 @@ export const startCellSelection = (event) => {
   initialCell = finalCell = event.target
   initialCellRect = initialCell.getBoundingClientRect()
 
-  // Agrega la celda inicial a la lista de celdas seleccionadas
-  selectedCells.push(getRowAndColumn(initialCell))
+  // Agrega la celda inicial al objeto de celdas seleccionadas
+  addSelectedCell(initialCell)
 
   // Añade listeners para continuar la selección
   document.addEventListener('mousemove', onCellSelection)
@@ -32,7 +32,8 @@ const handleHoveredCell = (event) => {
 
   hoveredCell = event.target
   finalCell = event.target
-  selectedCells.push(getRowAndColumn(hoveredCell))
+  // add hoveredCell
+  addSelectedCell(hoveredCell)
 
   // Si la selección comenzó y se volvió a la celda inicial, se elimina el cuadro de selección
   if (finalCell === initialCell && isSelecting) {
@@ -40,7 +41,7 @@ const handleHoveredCell = (event) => {
   }
 
   // Crea y agrega un cuadro de selección si aún no existe
-  if (finalCell !== initialCell && !document.querySelector('.wrapped-cells')) {
+  if (finalCell !== initialCell && !existSelectionBox()) {
     selectionBox = createSelectionBox()
   }
 
@@ -55,7 +56,7 @@ const handleHoveredCell = (event) => {
  */
 const onCellSelection = () => {
   document.body.style.userSelect = 'none'
-  if (!isSelecting && selectedCells.length <= 1) return
+  if (!isSelecting && Object.keys(selectedCells).length <= 1) return
   isSelecting = true
 }
 
@@ -64,10 +65,20 @@ const onCellSelection = () => {
  */
 const completeCellSelection = () => {
   document.body.style.userSelect = 'unset'
-  if (isSelecting) {
+  if (isSelecting && existSelectionBox()) {
     document.body.removeChild(selectionBox)
   }
+  
   resetSelectionState()
+}
+
+// comprobar si existe el box que se dibuja sobre las celdas que se van seleccionando
+const existSelectionBox = () => document.querySelector('.wrapped-cells')
+
+// Agregar celda al objeto de selecciondas
+const addSelectedCell = (cell) => {
+  let ariaLabelCell = getRowAndColumn(cell)
+  selectedCells[ariaLabelCell.row + ariaLabelCell.column] = ariaLabelCell
 }
 
 /**
@@ -183,7 +194,7 @@ const createSelectionBox = () => {
  */
 const resetSelectionState = () => {
   isSelecting = false
-  selectedCells = []
+  selectedCells = {}
   document.removeEventListener('mousemove', onCellSelection)
   document.removeEventListener('mouseup', completeCellSelection)
   document.removeEventListener('mouseover', handleHoveredCell)
