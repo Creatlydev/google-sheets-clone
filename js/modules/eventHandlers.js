@@ -21,10 +21,12 @@ export const initializeEventHandlers = () => {
 
   // Maneja el evento mousedown en la hoja de cálculo
   $bodySheet.addEventListener('mousedown', (event) => {
-    const target = event.target
-    // Resalta la celda de entrada seleccionada
-    highlightInputCell(target)
-    !isCellEditable(target) && startSelectingCells(event)
+    if (event.button === 0) {
+      const target = event.target
+      // Resalta la celda de entrada seleccionada
+      highlightInputCell(target)
+      !isCellEditable(target) && startSelectingCells(event)
+    }
   })
 
   // evento que impide el comportamiento por defecto cuando el navegador detecta que se quiere arrastrar algun elemento

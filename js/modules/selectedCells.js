@@ -130,14 +130,17 @@ const setBoundingClientRect = () => {
   console.table({
     startPosY,
     startPosX,
-
+    startYCell,
+    startXCell,
     height,
     width,
   })
 
   wrappedBox.style = ''
-  wrappedBox.style[startPosY] = `${startYCell}px`
-  wrappedBox.style[startPosX] = `${startXCell}px`
+  wrappedBox.style[startPosY] =
+    startPosY === 'bottom' ? `calc(100% - ${startYCell}px)` : `${startYCell}px`
+  wrappedBox.style[startPosX] =
+    startPosX === 'right' ? `calc(100% - ${startXCell}px)` : `${startXCell}px`
   wrappedBox.style.height = `${height}px`
   wrappedBox.style.width = `${width}px`
 }
