@@ -1,4 +1,5 @@
 import { columnToNumber } from '../utils/columnToNumber.js'
+import { numberToColumn } from '../utils/numberToColumn.js'
 import { ROLE_INPUT } from '../utils/constants.js'
 
 // Variables globales para el manejo de la selección de celdas
@@ -13,9 +14,6 @@ let selectionBox, initialCellRect
 export const startCellSelection = (event) => {
   initialCell = finalCell = event.target
   initialCellRect = initialCell.getBoundingClientRect()
-
-  // Agrega la celda inicial al objeto de celdas seleccionadas
-  addSelectedCell(initialCell)
 
   // Añade listeners para continuar la selección
   document.addEventListener('mousemove', onCellSelection)
@@ -36,7 +34,8 @@ const handleHoveredCell = (event) => {
   addSelectedCell(hoveredCell)
 
   // Si la selección comenzó y se volvió a la celda inicial, se elimina el cuadro de selección
-  if (finalCell === initialCell && isSelecting) {
+  if (finalCell === initialCell && existSelectionBox()) {
+    selectedCells = {}
     document.body.removeChild(selectionBox)
   }
 
@@ -48,6 +47,8 @@ const handleHoveredCell = (event) => {
   // Actualiza el cuadro de selección con las nuevas dimensiones
   if (finalCell !== initialCell) {
     updateSelectionBoxRect()
+    selectedCells = {}
+    findCellsInSelectionArea(initialCell, hoveredCell)
   }
 }
 
@@ -56,7 +57,7 @@ const handleHoveredCell = (event) => {
  */
 const onCellSelection = () => {
   document.body.style.userSelect = 'none'
-  if (!isSelecting && Object.keys(selectedCells).length <= 1) return
+  if (!isSelecting && Object.keys(selectedCells).length === 0) return
   isSelecting = true
 }
 
@@ -69,7 +70,7 @@ const completeCellSelection = () => {
     document.body.removeChild(selectionBox)
   }
   console.log('=======================================')
-  Object.keys(selectedCells).forEach((key) => console.table(selectedCells[key]))
+  console.table(selectedCells)
   resetSelectionState()
 }
 
@@ -96,7 +97,8 @@ const getRowAndColumn = (cell) => ({
  * Establece las dimensiones y posición del cuadro de selección en función de las celdas seleccionadas
  */
 const updateSelectionBoxRect = () => {
-  const { startX, startY, finishX, finishY, positions } = getSelectionBoxBounds()
+  const { startX, startY, finishX, finishY, positions } =
+    getSelectionBoxBounds()
   const height = Math.abs(finishY - startY)
   const width = Math.abs(finishX - startX)
 
@@ -121,9 +123,48 @@ const getSelectionBoxBounds = () => {
   const finishY = finalCellRect[positions.finishPosY] + window.scrollY
   const finishX = finalCellRect[positions.finishPosX] + window.scrollX
 
-  return { startX, startY, finishX, finishY, positions}
+  return { startX, startY, finishX, finishY, positions }
 }
 
+/**
+ * Encuentra todas las celdas dentro del área de selección definida por las celdas inicial y final.
+ * La función calcula el rango de filas y columnas cubiertos por el área de selección y genera una lista de celdas comprometidas.
+ *
+ * @param {Object} initial - Objeto que representa la celda inicial de la selección, con propiedades:
+ *                           {number} row - Número de la fila de la celda inicial.
+ *                           {string} column - Letra de la columna de la celda inicial.
+ * @param {Object} final - Objeto que representa la celda final de la selección, con propiedades:
+ *                         {number} row - Número de la fila de la celda final.
+ *                         {string} column - Letra de la columna de la celda final.
+ *
+ * @returns {Array<string>} - Lista de identificadores de celdas en el área de selección, donde cada identificador es una cadena compuesta por el número de fila y el número de columna.
+ *
+ */
+function findCellsInSelectionArea(initial, final) {
+  const getMinAndMax = (a, b) => {
+    if (a <= b) return { min: a, max: b }
+    return { min: b, max: a }
+  }
+
+  let { min: minRow, max: maxRow } = getMinAndMax(
+    initial.getAttribute('label-header-row'),
+    final.getAttribute('label-header-row')
+  )
+  let { min: minColumn, max: maxColumn } = getMinAndMax(
+    initial.getAttribute('label-header-col'),
+    final.getAttribute('label-header-col')
+  )
+
+  minColumn = columnToNumber(minColumn)
+  maxColumn = columnToNumber(maxColumn)
+
+  for (let i = minRow; i <= maxRow; i++) {
+    for (let j = minColumn; j <= maxColumn; j++) {
+      const col = numberToColumn(j)
+      selectedCells[`${i}${col}`] = { row: i, column: col }
+    }
+  }
+}
 
 /**
  * Determina las posiciones de inicio y fin del cuadro de selección
