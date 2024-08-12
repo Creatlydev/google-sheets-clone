@@ -70,77 +70,77 @@ const getRowAndColumn = (cell) => {
 }
 
 const setBoundingClientRect = () => {
-  let { row: rowStartCell, column: columnStartCell } =
-    getRowAndColumn(startCell)
-  columnStartCell = columnToNumber(columnStartCell)
+  const { row: rowStart, column: columnStart } = getRowAndColumn(startCell)
+  const { row: rowFinish, column: columnFinish } = getRowAndColumn(finishCell)
 
-  let { row: rowFinishCell, column: columnFinishCell } =
-    getRowAndColumn(finishCell)
-  columnFinishCell = columnToNumber(columnFinishCell)
-  // ----------------------------------------- \\
-  let startWrappedX, startWrappedY, finishWrappedX, finishWrappedY
-  let startPosX, startPosY, finishPosX, finishPosY
+  const positions = determineStartFinishPositions(
+    rowStart,
+    columnStart,
+    rowFinish,
+    columnFinish
+  )
 
-  if (
-    (rowFinishCell > rowStartCell && columnFinishCell > columnStartCell) ||
-    (rowFinishCell > rowStartCell && columnFinishCell === columnStartCell) ||
-    (rowFinishCell === rowStartCell && columnFinishCell > columnStartCell)
-  ) {
+  const startYCell = calculateCellPosition(boxCell, positions.startPosY)
+  const startXCell = calculateCellPosition(boxCell, positions.startPosX)
+
+  const boxFinishCell = finishCell.getBoundingClientRect()
+  const finishYCell = calculateCellPosition(boxFinishCell, positions.finishPosY)
+  const finishXCell = calculateCellPosition(boxFinishCell, positions.finishPosX)
+
+  const height = Math.abs(finishYCell - startYCell)
+  const width = Math.abs(finishXCell - startXCell)
+
+  applyStylesToWrappedBox(positions, startYCell, startXCell, height, width)
+}
+
+const determineStartFinishPositions = (
+  rowStart,
+  columnStart,
+  rowFinish,
+  columnFinish
+) => {
+  const columnStartNum = columnToNumber(columnStart)
+  const columnFinishNum = columnToNumber(columnFinish)
+
+  let startPosY, startPosX, finishPosY, finishPosX
+
+  if (rowFinish >= rowStart && columnFinishNum >= columnStartNum) {
     startPosY = 'top'
     startPosX = 'left'
     finishPosY = 'bottom'
     finishPosX = 'right'
-  } else if (
-    (rowFinishCell > rowStartCell && columnFinishCell < columnStartCell) ||
-    (rowFinishCell === rowStartCell && columnFinishCell < columnStartCell)
-  ) {
+  } else if (rowFinish >= rowStart && columnFinishNum < columnStartNum) {
     startPosY = 'top'
     startPosX = 'right'
     finishPosY = 'bottom'
     finishPosX = 'left'
-  } else if (
-    (rowFinishCell < rowStartCell && columnFinishCell < columnStartCell) ||
-    (rowFinishCell < rowStartCell && columnFinishCell === columnStartCell)
-  ) {
-    startPosY = 'bottom'
-    startPosX = 'right'
-    finishPosY = 'top'
-    finishPosX = 'left'
-  } else if (
-    rowFinishCell < rowStartCell &&
-    columnFinishCell > columnStartCell
-  ) {
+  } else if (rowFinish < rowStart && columnFinishNum >= columnStartNum) {
     startPosY = 'bottom'
     startPosX = 'left'
     finishPosY = 'top'
     finishPosX = 'right'
+  } else {
+    startPosY = 'bottom'
+    startPosX = 'right'
+    finishPosY = 'top'
+    finishPosX = 'left'
   }
 
-  //   ==================
-  let startYCell = parseFloat(boxCell[startPosY]) + window.scrollY
-  let startXCell = parseFloat(boxCell[startPosX]) + window.scrollX
+  return { startPosY, startPosX, finishPosY, finishPosX }
+}
 
-  let boxFinishCell = finishCell.getBoundingClientRect()
+const calculateCellPosition = (cellRect, position) => {
+  return parseFloat(cellRect[position]) + window.scrollY
+}
 
-  let finishYCell = parseFloat(boxFinishCell[finishPosY]) + window.scrollY
-  let finishXCell = parseFloat(boxFinishCell[finishPosX]) + window.scrollX
-  let height = Math.abs(finishYCell - startYCell)
-  let width = Math.abs(finishXCell - startXCell)
-
-  console.table({
-    startPosY,
-    startPosX,
-    startYCell,
-    startXCell,
-    height,
-    width,
-  })
-
+const applyStylesToWrappedBox = (positions, startY, startX, height, width) => {
+  let startPosY = positions.startPosY
+  let startPosX = positions.startPosX
   wrappedBox.style = ''
   wrappedBox.style[startPosY] =
-    startPosY === 'bottom' ? `calc(100% - ${startYCell}px)` : `${startYCell}px`
+    startPosY === 'bottom' ? `calc(100% - ${startY}px)` : `${startY}px`
   wrappedBox.style[startPosX] =
-    startPosX === 'right' ? `calc(100% - ${startXCell}px)` : `${startXCell}px`
+    startPosX === 'right' ? `calc(100% - ${startX}px)` : `${startX}px`
   wrappedBox.style.height = `${height}px`
   wrappedBox.style.width = `${width}px`
 }

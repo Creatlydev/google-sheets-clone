@@ -10,7 +10,7 @@ import {
 import { $ } from '../utils/domUtils.js'
 import { startResizing } from './resize.js'
 import { ROLE_INPUT } from '../utils/constants.js'
-import { startSelectingCells } from './selectedCells.js'
+import { startSelectingCells } from './cellSelectionBox.js'
 
 // Inicializa los manejadores de eventos para la hoja de cálculo
 export const initializeEventHandlers = () => {
