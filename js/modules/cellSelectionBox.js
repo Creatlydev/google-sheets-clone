@@ -68,7 +68,8 @@ const completeCellSelection = () => {
   if (isSelecting && existSelectionBox()) {
     document.body.removeChild(selectionBox)
   }
-  
+  console.log('=======================================')
+  Object.keys(selectedCells).forEach((key) => console.table(selectedCells[key]))
   resetSelectionState()
 }
 
@@ -95,6 +96,14 @@ const getRowAndColumn = (cell) => ({
  * Establece las dimensiones y posición del cuadro de selección en función de las celdas seleccionadas
  */
 const updateSelectionBoxRect = () => {
+  const { startX, startY, finishX, finishY, positions } = getSelectionBoxBounds()
+  const height = Math.abs(finishY - startY)
+  const width = Math.abs(finishX - startX)
+
+  applyStylesToSelectionBox(positions, startY, startX, height, width)
+}
+
+const getSelectionBoxBounds = () => {
   const { row: startRow, column: startColumn } = getRowAndColumn(initialCell)
   const { row: finishRow, column: finishColumn } = getRowAndColumn(finalCell)
 
@@ -112,11 +121,9 @@ const updateSelectionBoxRect = () => {
   const finishY = finalCellRect[positions.finishPosY] + window.scrollY
   const finishX = finalCellRect[positions.finishPosX] + window.scrollX
 
-  const height = Math.abs(finishY - startY)
-  const width = Math.abs(finishX - startX)
-
-  applyStylesToSelectionBox(positions, startY, startX, height, width)
+  return { startX, startY, finishX, finishY, positions}
 }
+
 
 /**
  * Determina las posiciones de inicio y fin del cuadro de selección
