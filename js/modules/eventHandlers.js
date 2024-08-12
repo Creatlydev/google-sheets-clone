@@ -5,7 +5,7 @@ import {
   highlightInputCell,
   disableCellEditing,
   moveFocusToAdjacentCell,
-  moveFocusVerticallyCell
+  moveFocusVerticallyCell,
 } from './cellActions.js'
 import { $ } from '../utils/domUtils.js'
 import { startResizing } from './resize.js'
@@ -71,22 +71,20 @@ export const initializeEventHandlers = () => {
         enableCellEditing(target)
       }
     } else if (event.key === 'Delete' || event.key === 'Backspace') {
-        // Limpia el contenido de la celda si no es editable
-        !isCellEditable(target) && clearCellContent(target)
-    }
-    
-    else if (event.ctrlKey && event.key === 'a') {
-        !isCellEditable(target) && event.preventDefault()
+      // Limpia el contenido de la celda si no es editable
+      !isCellEditable(target) && clearCellContent(target)
+    } else if (event.ctrlKey && event.key === 'a') {
+      !isCellEditable(target) && event.preventDefault()
     }
 
     // Detectar si se ha presionado algunas de las teclas de flecha y mover foco a la celda correspondiente segun la dirrecion
     else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
       let direction = event.key === 'ArrowRight' ? 'right' : 'left'
-      event.preventDefault()
+      !isCellEditable(target) && event.preventDefault()
       !isCellEditable(target) && moveFocusToAdjacentCell(target, direction)
     } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       let direction = event.key === 'ArrowUp' ? 'up' : 'down'
-      event.preventDefault()
+      !isCellEditable(target) && event.preventDefault()
       !isCellEditable(target) && moveFocusVerticallyCell(target, direction)
     }
   })
