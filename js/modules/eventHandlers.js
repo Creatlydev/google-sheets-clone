@@ -10,7 +10,7 @@ import {
 import { $ } from '../utils/domUtils.js'
 import { startResizing } from './resize.js'
 import { ROLE_INPUT } from '../utils/constants.js'
-import { startSelectingCells } from './cellSelectionBox.js'
+import { startCellSelection } from './cellSelectionBox.js'
 
 // Inicializa los manejadores de eventos para la hoja de cálculo
 export const initializeEventHandlers = () => {
@@ -25,7 +25,7 @@ export const initializeEventHandlers = () => {
       const target = event.target
       // Resalta la celda de entrada seleccionada
       highlightInputCell(target)
-      !isCellEditable(target) && startSelectingCells(event)
+      !isCellEditable(target) && startCellSelection(event)
     }
   })
 

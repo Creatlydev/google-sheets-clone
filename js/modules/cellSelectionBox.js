@@ -2,59 +2,58 @@ import { columnToNumber } from '../utils/columnToNumber.js'
 import { ROLE_INPUT } from '../utils/constants.js'
 
 // Variables globales para el manejo de la selección de celdas
-let isSelecting, startCell, finishCell, currentHoverCell
+let isSelecting, initialCell, finalCell, hoveredCell
 let selectedCells = []
-let wrappedBox, boxCell
+let selectionBox, initialCellRect
 
 /**
  * Inicia el proceso de selección de celdas
  * @param {Event} event - Evento de clic en la celda inicial
  */
-export const startSelectingCells = (event) => {
-  startCell = finishCell = event.target
-  boxCell = startCell.getBoundingClientRect()
+export const startCellSelection = (event) => {
+  initialCell = finalCell = event.target
+  initialCellRect = initialCell.getBoundingClientRect()
 
   // Agrega la celda inicial a la lista de celdas seleccionadas
-  selectedCells.push(getRowAndColumn(startCell))
+  selectedCells.push(getRowAndColumn(initialCell))
 
   // Añade listeners para continuar la selección
-  document.addEventListener('mousemove', selectingCells)
-  document.addEventListener('mouseup', finishSelectingCells)
-  document.addEventListener('mouseover', addCurrentHoverCell)
+  document.addEventListener('mousemove', onCellSelection)
+  document.addEventListener('mouseup', completeCellSelection)
+  document.addEventListener('mouseover', handleHoveredCell)
 }
 
 /**
  * Agrega la celda actual al proceso de selección cuando se pasa sobre ella
  * @param {Event} event - Evento mouseover
  */
-const addCurrentHoverCell = (event) => {
+const handleHoveredCell = (event) => {
   if (event.target.getAttribute('role') !== ROLE_INPUT) return
 
-  currentHoverCell = event.target
-  finishCell = event.target
-  selectedCells.push(getRowAndColumn(currentHoverCell))
+  hoveredCell = event.target
+  finalCell = event.target
+  selectedCells.push(getRowAndColumn(hoveredCell))
 
   // Si la selección comenzó y se volvió a la celda inicial, se elimina el cuadro de selección
-  if (finishCell === startCell && isSelecting) {
-    document.body.removeChild(wrappedBox)
+  if (finalCell === initialCell && isSelecting) {
+    document.body.removeChild(selectionBox)
   }
 
   // Crea y agrega un cuadro de selección si aún no existe
-  if (finishCell !== startCell && !document.querySelector('.wrapped-cells')) {
-    wrappedBox = createWrappedBox()
+  if (finalCell !== initialCell && !document.querySelector('.wrapped-cells')) {
+    selectionBox = createSelectionBox()
   }
 
   // Actualiza el cuadro de selección con las nuevas dimensiones
-  if (finishCell !== startCell) {
-    setBoundingClientRect()
+  if (finalCell !== initialCell) {
+    updateSelectionBoxRect()
   }
 }
 
 /**
  * Bloquea la selección de texto mientras se seleccionan celdas
- * @param {Event} event - Evento mousemove
  */
-const selectingCells = () => {
+const onCellSelection = () => {
   document.body.style.userSelect = 'none'
   if (!isSelecting && selectedCells.length <= 1) return
   isSelecting = true
@@ -63,10 +62,10 @@ const selectingCells = () => {
 /**
  * Finaliza el proceso de selección de celdas
  */
-const finishSelectingCells = () => {
+const completeCellSelection = () => {
   document.body.style.userSelect = 'unset'
   if (isSelecting) {
-    document.body.removeChild(wrappedBox)
+    document.body.removeChild(selectionBox)
   }
   resetSelectionState()
 }
@@ -84,55 +83,55 @@ const getRowAndColumn = (cell) => ({
 /**
  * Establece las dimensiones y posición del cuadro de selección en función de las celdas seleccionadas
  */
-const setBoundingClientRect = () => {
-  const { row: rowStart, column: columnStart } = getRowAndColumn(startCell)
-  const { row: rowFinish, column: columnFinish } = getRowAndColumn(finishCell)
+const updateSelectionBoxRect = () => {
+  const { row: startRow, column: startColumn } = getRowAndColumn(initialCell)
+  const { row: finishRow, column: finishColumn } = getRowAndColumn(finalCell)
 
-  const positions = determineStartFinishPositions(
-    rowStart,
-    columnStart,
-    rowFinish,
-    columnFinish
+  const positions = calculateStartFinishPositions(
+    startRow,
+    startColumn,
+    finishRow,
+    finishColumn
   )
 
-  const startYCell = boxCell[positions.startPosY] + window.scrollY
-  const startXCell = boxCell[positions.startPosX] + window.scrollX
+  const startY = initialCellRect[positions.startPosY] + window.scrollY
+  const startX = initialCellRect[positions.startPosX] + window.scrollX
 
-  const boxFinishCell = finishCell.getBoundingClientRect()
-  const finishYCell = boxFinishCell[positions.finishPosY] + window.scrollY
-  const finishXCell = boxFinishCell[positions.finishPosX] + window.scrollX
+  const finalCellRect = finalCell.getBoundingClientRect()
+  const finishY = finalCellRect[positions.finishPosY] + window.scrollY
+  const finishX = finalCellRect[positions.finishPosX] + window.scrollX
 
-  const height = Math.abs(finishYCell - startYCell)
-  const width = Math.abs(finishXCell - startXCell)
+  const height = Math.abs(finishY - startY)
+  const width = Math.abs(finishX - startX)
 
-  applyStylesToWrappedBox(positions, startYCell, startXCell, height, width)
+  applyStylesToSelectionBox(positions, startY, startX, height, width)
 }
 
 /**
  * Determina las posiciones de inicio y fin del cuadro de selección
  */
-const determineStartFinishPositions = (
-  rowStart,
-  columnStart,
-  rowFinish,
-  columnFinish
+const calculateStartFinishPositions = (
+  startRow,
+  startColumn,
+  finishRow,
+  finishColumn
 ) => {
-  const columnStartNum = columnToNumber(columnStart)
-  const columnFinishNum = columnToNumber(columnFinish)
+  const startColumnNum = columnToNumber(startColumn)
+  const finishColumnNum = columnToNumber(finishColumn)
 
   let startPosY, startPosX, finishPosY, finishPosX
 
-  if (rowFinish >= rowStart && columnFinishNum >= columnStartNum) {
+  if (finishRow >= startRow && finishColumnNum >= startColumnNum) {
     startPosY = 'top'
     startPosX = 'left'
     finishPosY = 'bottom'
     finishPosX = 'right'
-  } else if (rowFinish >= rowStart && columnFinishNum < columnStartNum) {
+  } else if (finishRow >= startRow && finishColumnNum < startColumnNum) {
     startPosY = 'top'
     startPosX = 'right'
     finishPosY = 'bottom'
     finishPosX = 'left'
-  } else if (rowFinish < rowStart && columnFinishNum >= columnStartNum) {
+  } else if (finishRow < startRow && finishColumnNum >= startColumnNum) {
     startPosY = 'bottom'
     startPosX = 'left'
     finishPosY = 'top'
@@ -150,23 +149,29 @@ const determineStartFinishPositions = (
 /**
  * Aplica los estilos calculados al cuadro de selección
  */
-const applyStylesToWrappedBox = (positions, startY, startX, height, width) => {
+const applyStylesToSelectionBox = (
+  positions,
+  startY,
+  startX,
+  height,
+  width
+) => {
   let { startPosY, startPosX } = positions
 
-  wrappedBox.style = ''
-  wrappedBox.style[startPosY] =
+  selectionBox.style = ''
+  selectionBox.style[startPosY] =
     startPosY === 'bottom' ? `calc(100% - ${startY}px)` : `${startY}px`
-  wrappedBox.style[startPosX] =
+  selectionBox.style[startPosX] =
     startPosX === 'right' ? `calc(100% - ${startX}px)` : `${startX}px`
-  wrappedBox.style.height = `${height}px`
-  wrappedBox.style.width = `${width}px`
+  selectionBox.style.height = `${height}px`
+  selectionBox.style.width = `${width}px`
 }
 
 /**
  * Crea y devuelve un nuevo elemento div para el cuadro de selección
  * @returns {Element} - Elemento div creado
  */
-const createWrappedBox = () => {
+const createSelectionBox = () => {
   const box = document.createElement('div')
   box.classList.add('wrapped-cells')
   document.body.appendChild(box)
@@ -179,7 +184,7 @@ const createWrappedBox = () => {
 const resetSelectionState = () => {
   isSelecting = false
   selectedCells = []
-  document.removeEventListener('mousemove', selectingCells)
-  document.removeEventListener('mouseup', finishSelectingCells)
-  document.removeEventListener('mouseover', addCurrentHoverCell)
+  document.removeEventListener('mousemove', onCellSelection)
+  document.removeEventListener('mouseup', completeCellSelection)
+  document.removeEventListener('mouseover', handleHoveredCell)
 }
