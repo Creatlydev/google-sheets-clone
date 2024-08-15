@@ -5,6 +5,10 @@ export const CELL_CLASSES = {
   EDITABLE: 'cell-editable',
 }
 
+export const ROLES = {
+  CELL_INPUT: 'cell-input'
+}
+
 export const RESIZER_CLASSES = {
   HOVER: 'resizer-hover',
 }

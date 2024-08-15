@@ -5,7 +5,7 @@ export const $$ = (el) => document.querySelectorAll(el)
 export function createElement(tag, attributes = {}, content = '') {
   const element = document.createElement(tag)
   Object.keys(attributes).forEach((key) => {
-    element.setAttribute(key, attributes[key])
+    setAttribute(element, key, attributes[key])
   })
 
   element.innerHTML = content
@@ -35,6 +35,11 @@ export function getStyle(element, styleName, inline) {
 // Obtener valor de un atributo
 export function getAttribute(element, attributeName) {
   return element.getAttribute(attributeName)
+}
+
+// Establecer atributo
+export function setAttribute(element, attributeName, value) {
+  element.setAttribute(attributeName, value)
 }
 
 // Verficar existencia de elemento

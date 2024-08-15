@@ -18,3 +18,93 @@ body {
     background-color: #f2f2f2;
     color: hsl(0, 0%, 35%);
 }
+
+
+/* GRID-CONTAINER */
+#grid-container {
+    --grid-columns: repeat(26, 100px);
+    --grid-rows: repeat(40, 24px);
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    grid-template-rows: 24px 1fr;
+    width: max-content;
+}
+
+.horizontal-head,
+.vertical-head {
+    display: grid;
+    text-align: center;
+    grid-column-start: 2;
+    position: sticky;
+    z-index: 100;
+}
+
+.horizontal-head {
+    grid-template-columns: var(--grid-columns);
+    top: 0;
+}
+
+.vertical-head {
+    grid-row-start: 2;
+    grid-column-start: 1;
+    grid-template-rows: var(--grid-rows);
+    left: 0;
+}
+
+.head-cell,
+.fixed {
+    background-color: #f4f6f8;
+    font-size: .75rem;
+    font-weight: 500;
+    border: 1px solid #c0c0c0;
+    display: grid;
+    place-items: center;
+    position: relative;
+}
+
+.fixed {
+    grid-column-start: 1;
+    border-width: 3px;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 200;
+}
+
+.spreadsheet {
+    grid-column-start: 2;
+    display: grid;
+    grid-template-columns: var(--grid-columns);
+    grid-template-rows: var(--grid-rows);
+}
+
+.cell-input {
+    border: 1px solid #e0e0e0;
+    color: hsl(0, 0%, 25%);
+    font-size: .75rem;
+    line-height: 1.5;
+    text-wrap: nowrap;
+    cursor: default;
+    background-color: #f2f2f2;
+    position: relative;
+}
+
+.cell-input span,
+.cell-input div {
+    position: absolute;
+    inset: 0;
+}
+
+.cell-input div,
+.cell-input .computed-value {
+    padding: 0 .25rem;
+    text-wrap: nowrap;
+    cursor: default;
+    background-color: #f2f2f2;
+}
+
+.cell-input:focus,
+.cell-input.is-active {
+    border: 2px solid #1a73e8;
+    outline: none;
+}
