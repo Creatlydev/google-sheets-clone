@@ -1,0 +1,66 @@
+import { INITIAL_GRID } from '../../constants.js'
+import { gridState } from './GridState.js'
+import { $, createElement, setStyles } from '../../utils/DOMUtils.js'
+import { createCellContainer } from './Grid.js'
+
+const $gridContainer = $('#grid-container')
+const $spreadSheet = $('.js-spreadsheet')
+
+// Funcion para agregar nuevas filas
+function addRows() {
+  const $verticalHead = $('.js-vertical-head')
+  const fragment = document.createDocumentFragment()
+  const cellFragment = document.createDocumentFragment()
+  const NEW_ROWS = []
+
+  const currentRowCount = gridState.cells.length
+  console.log(`CANTIDAD ROWS: ${currentRowCount}`)
+  const updateRowCount = currentRowCount + INITIAL_GRID.ROW_INCREMENT
+  for (let row = currentRowCount; row < updateRowCount; row++) {
+    fragment.appendChild(
+      createElement('div', { class: 'head-cell', index: row }, row + 1)
+    )
+    NEW_ROWS.push([])
+    for (let col = 0; col < gridState.cells[0].length; col++) {
+      const cell = { computedValue: '', value: '' }
+      cellFragment.appendChild(createCellContainer(cell, row, col))
+      NEW_ROWS[row - currentRowCount].push(cell)
+    }
+  }
+
+  setStyles($gridContainer, { '--rows': updateRowCount })
+  $verticalHead.appendChild(fragment)
+  $spreadSheet.appendChild(cellFragment)
+  moveSentinel()
+
+  // Update STATE
+  console.log(NEW_ROWS)
+  gridState.cells = [...gridState.cells, ...NEW_ROWS]
+}
+
+function moveSentinel() {
+  const $verticalSentinel = $('.sentinel-vertical')
+  $gridContainer.appendChild($verticalSentinel) // Mover el sentinela al final
+}
+
+export function initGridExpansionObservers() {
+  const $verticalSentinel = createElement('div', {
+    class: 'sentinel-vertical',
+  })
+
+  $gridContainer.appendChild($verticalSentinel)
+
+  const verticalObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) {
+        console.log('INTERSECION')
+        addRows()
+      }
+    },
+    {
+      threshold: 0,
+    }
+  )
+
+  verticalObserver.observe($verticalSentinel)
+}

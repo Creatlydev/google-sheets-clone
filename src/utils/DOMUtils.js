@@ -22,7 +22,10 @@ export function appendElements(parent, ...elements) {
 // Establecer estilos css
 export function setStyles(element, styles = {}) {
   Object.keys(styles).forEach((key) => {
-    element.style[key] = styles[key]
+    console.log(`KEY: ${key} - VALUE: ${styles[key]}`)
+    key.startsWith('--')
+      ? element.style.setProperty(key, styles[key])
+      : (element.style[key] = styles[key])
   })
 }
 

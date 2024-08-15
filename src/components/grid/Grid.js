@@ -41,7 +41,7 @@ function createInitialGrid() {
 }
 
 // Función para crear el contenedor de la celda
-function createCellContainer(cell, row, col) {
+export function createCellContainer(cell, row, col) {
   const cellInput = createElement('div', {
     role: ROLES.CELL_INPUT,
     class: 'cell-input',

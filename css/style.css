@@ -17,17 +17,23 @@ body {
     height: 100vh;
     background-color: #f2f2f2;
     color: hsl(0, 0%, 35%);
+    overflow: hidden;
 }
 
 
 /* GRID-CONTAINER */
 #grid-container {
-    --grid-columns: repeat(26, 100px);
-    --grid-rows: repeat(40, 24px);
+    --rows: 40;
+    --cols: 26;
+    --grid-columns: repeat(var(--cols), 100px);
+    --grid-rows: repeat(var(--rows), 24px);
     display: grid;
     grid-template-columns: 56px 1fr;
     grid-template-rows: 24px 1fr;
-    width: max-content;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    scrollbar-width: thin;
 }
 
 .horizontal-head,
