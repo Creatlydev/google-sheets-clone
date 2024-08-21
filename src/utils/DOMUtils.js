@@ -22,7 +22,6 @@ export function appendElements(parent, ...elements) {
 // Establecer estilos css
 export function setStyles(element, styles = {}) {
   Object.keys(styles).forEach((key) => {
-    console.log(`KEY: ${key} - VALUE: ${styles[key]}`)
     key.startsWith('--')
       ? element.style.setProperty(key, styles[key])
       : (element.style[key] = styles[key])
@@ -43,6 +42,11 @@ export function getAttribute(element, attributeName) {
 // Establecer atributo
 export function setAttribute(element, attributeName, value) {
   element.setAttribute(attributeName, value)
+}
+
+// Remove attribute
+export function removeAttribute(element, attributeName) {
+  element.removeAttribute(attributeName)
 }
 
 // Verficar existencia de elemento

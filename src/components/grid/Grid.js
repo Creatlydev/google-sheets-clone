@@ -1,4 +1,4 @@
-import { INITIAL_GRID, ROLES } from '../../constants.js'
+import { INITIAL_GRID, ROLES } from '../../Constants.js'
 import { $ } from '../../utils/DOMUtils.js'
 import { createElement, setAttribute, setStyles } from '../../utils/DOMUtils.js'
 import { numberToColumn } from '../../utils/Helpers.js'
@@ -9,13 +9,11 @@ function createInitialGrid() {
   const $horizontalHead = $('.js-horizontal-head')
   const $verticalHead = $('.js-vertical-head')
 
-  setStyles($horizontalHead, { 'user-select': 'none' })
-
   // Crear encabezado horizontal
-  const headFragment = document.createDocumentFragment()
+  const horizontalFragment = document.createDocumentFragment()
   for (let i = 0; i < INITIAL_GRID.VISIBLE_COLS; i++) {
     const ariaLabel = numberToColumn(i)
-    headFragment.appendChild(
+    horizontalFragment.appendChild(
       createElement(
         'div',
         { class: 'head-cell', 'aria-label': ariaLabel, index: i },
@@ -24,7 +22,7 @@ function createInitialGrid() {
     )
   }
 
-  $horizontalHead.appendChild(headFragment)
+  $horizontalHead.appendChild(horizontalFragment)
 
   // Crear encabezado Vertcial
   const verticalFragment = document.createDocumentFragment()
@@ -46,16 +44,16 @@ export function createCellContainer(cell, row, col) {
     role: ROLES.CELL_INPUT,
     class: 'cell-input',
     tabindex: '0',
-    'data-x': row,
-    'data-y': col,
+    'data-row': row,
+    'data-col': col,
   })
 
   const computedValue = createElement(
     'span',
     { class: 'computed-value' },
     cell.computedValue
-  )
-  const valueElement = createElement('div', {}, cell.value)
+)
+  const valueElement = createElement('div', { class: 'value' }, cell.value)
 
   cellInput.appendChild(valueElement)
   cellInput.appendChild(computedValue)

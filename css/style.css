@@ -10,6 +10,7 @@
 
 html {
     scrollbar-width: thin;
+    user-select: none;
 }
 
 body {
@@ -95,18 +96,26 @@ body {
     position: relative;
 }
 
-.cell-input span,
-.cell-input div {
+.computed-value,
+.value {
     position: absolute;
     inset: 0;
 }
 
-.cell-input div,
-.cell-input .computed-value {
+.value,
+.computed-value {
     padding: 0 .25rem;
     text-wrap: nowrap;
     cursor: default;
     background-color: #f2f2f2;
+}
+
+.value {
+    cursor: auto;
+}
+
+.value:focus {
+    outline: none;
 }
 
 .cell-input:focus,

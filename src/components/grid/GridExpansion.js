@@ -1,4 +1,4 @@
-import { INITIAL_GRID } from '../../constants.js'
+import { INITIAL_GRID } from '../../Constants.js'
 import { gridState } from './GridState.js'
 import { $, createElement, setStyles } from '../../utils/DOMUtils.js'
 import { createCellContainer } from './Grid.js'
@@ -13,8 +13,7 @@ function addRows() {
   const cellFragment = document.createDocumentFragment()
   const NEW_ROWS = []
 
-  const currentRowCount = gridState.cells.length
-  console.log(`CANTIDAD ROWS: ${currentRowCount}`)
+  const currentRowCount = gridState.length()
   const updateRowCount = currentRowCount + INITIAL_GRID.ROW_INCREMENT
   for (let row = currentRowCount; row < updateRowCount; row++) {
     fragment.appendChild(
@@ -43,7 +42,7 @@ function moveSentinel() {
   $gridContainer.appendChild($verticalSentinel) // Mover el sentinela al final
 }
 
-export function initGridExpansionObservers() {
+export function initGridExpansionObserver() {
   const $verticalSentinel = createElement('div', {
     class: 'sentinel-vertical',
   })
@@ -53,7 +52,6 @@ export function initGridExpansionObservers() {
   const verticalObserver = new IntersectionObserver(
     (entries) => {
       if (entries[0].isIntersecting) {
-        console.log('INTERSECION')
         addRows()
       }
     },
