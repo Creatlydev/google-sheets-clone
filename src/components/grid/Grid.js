@@ -46,6 +46,7 @@ export function createCellContainer(cell, row, col) {
     tabindex: '0',
     'data-row': row,
     'data-col': col,
+    'aria-label': numberToColumn(col)
   })
 
   const computedValue = createElement(

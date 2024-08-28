@@ -15,8 +15,6 @@ import { gridState } from './GridState.js'
 // Añade la clases a la celda
 const addClassCell = (cell, ...classes) => cell.classList.add(...classes)
 
-const getEditableCell = (cell) => cell.querySelector('.value')
-
 const getChildrensCell = (cell) => {
   const value = cell.querySelector('.value')
   const computedValue = cell.querySelector('.computed-value')
@@ -67,6 +65,7 @@ export const disableCellEditing = (cell, { force = false } = {}) => {
       removeAttribute(value, 'contenteditable')
       setStyles(value, { 'z-index': 'unset' })
       setCurrentEditableCell(null)
+      updateCell(cell)
     } catch (error) {
       // Maneja silenciosamente cualquier error si no hay celda editable
     }

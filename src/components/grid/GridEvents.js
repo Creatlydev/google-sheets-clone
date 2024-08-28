@@ -1,6 +1,8 @@
+import { setCurrentActiveCell } from '../../GlobalState.js'
 import { $, setStyles } from '../../utils/DOMUtils.js'
 import {
   clearContentCell,
+  disableCellEditing,
   enableEditingCell,
   highlightInputCell,
   isEditableCell,
@@ -24,18 +26,11 @@ export function initGridEventListeners() {
   $spreadSheet.addEventListener('keydown', (event) => {
     const $cellInput = event.target.closest('.cell-input')
     if (!$cellInput) return
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      if (isEditableCell($cellInput)) {
-        // Mueve el foco a la celda siguiente si la celda es editable
-        // moveFocusVerticallyCell(target, 'down')
-      } else {
-        // Habilita la edición de la celda si no es editable
-        enableEditingCell($cellInput)
-      }
-    } else if (event.key === 'Delete' || event.key === 'Backspace') {
+    if (event.key === 'Delete' || event.key === 'Backspace') {
       // Limpia el contenido de la celda si no es editable
-      !isEditableCell($cellInput) && clearContentCell($cellInput)
+      if (!isEditableCell($cellInput)) {
+        clearContentCell($cellInput)
+      }
     }
   })
 
@@ -43,7 +38,9 @@ export function initGridEventListeners() {
   $spreadSheet.addEventListener('keypress', (event) => {
     const $cellInput = event.target.closest('.cell-input')
     if (!$cellInput) return
-    !isEditableCell($cellInput) && enableEditingCell($cellInput)
+    if (!isEditableCell($cellInput)) {
+      enableEditingCell($cellInput)
+    }
   })
 
   //   DOUBLE-CLICK
@@ -55,12 +52,21 @@ export function initGridEventListeners() {
 
   $spreadSheet.addEventListener('focusout', (event) => {
     const target = event.relatedTarget
+
     if (target) {
       const $cellInput = target.closest('.cell-input')
       if ($cellInput) highlightInputCell($cellInput)
-      else {
-        // Logica here
+    } else {
+      const $cellInput = event.target.closest('.cell-input')
+      if (isEditableCell($cellInput)) {
+        disableCellEditing($cellInput, { force: true })
       }
     }
+  })
+
+  $spreadSheet.addEventListener('focusin', (event) => {
+    const $cellInput = event.target.closest('.cell-input')
+    if (!$cellInput) return
+    highlightInputCell($cellInput)
   })
 }

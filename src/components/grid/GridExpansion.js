@@ -33,7 +33,6 @@ function addRows() {
   moveSentinel()
 
   // Update STATE
-  console.log(NEW_ROWS)
   gridState.cells = [...gridState.cells, ...NEW_ROWS]
 }
 
