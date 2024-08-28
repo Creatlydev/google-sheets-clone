@@ -1,16 +1,21 @@
 export const CELL_CLASSES = {
   SELECTED: 'cell-selected',
-  HIGHLIGHTED: 'cell-highlighted',
+  HIGHLIGHTED: 'highlighted',
   ACTIVE: 'cell-active',
   EDITABLE: 'cell-editable',
 }
 
+export const HEADER_CLASSES = {
+  HEAD_CELL: 'head-cell'
+}
+
 export const ROLES = {
-  CELL_INPUT: 'cell-input'
+  CELL_INPUT: 'cell-input',
 }
 
 export const RESIZER_CLASSES = {
   HOVER: 'resizer-hover',
+  RESIZER: 'resizer',
 }
 
 export const GRID_INITIAL_SIZES = {

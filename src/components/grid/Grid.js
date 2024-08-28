@@ -1,4 +1,4 @@
-import { INITIAL_GRID, ROLES } from '../../Constants.js'
+import { INITIAL_GRID, ROLES, HEADER_CLASSES } from '../../Constants.js'
 import { $ } from '../../utils/DOMUtils.js'
 import { createElement, setAttribute, setStyles } from '../../utils/DOMUtils.js'
 import { numberToColumn } from '../../utils/Helpers.js'
@@ -16,7 +16,7 @@ function createInitialGrid() {
     horizontalFragment.appendChild(
       createElement(
         'div',
-        { class: 'head-cell', 'aria-label': ariaLabel, index: i },
+        { class: HEADER_CLASSES.HEAD_CELL, 'aria-label': ariaLabel, index: i },
         ariaLabel
       )
     )
@@ -28,7 +28,7 @@ function createInitialGrid() {
   const verticalFragment = document.createDocumentFragment()
   for (let i = 0; i < INITIAL_GRID.VISIBLE_ROWS; i++) {
     verticalFragment.appendChild(
-      createElement('div', { class: 'head-cell', index: i }, i + 1)
+      createElement('div', { class: HEADER_CLASSES.HEAD_CELL, index: i }, i + 1)
     )
   }
 

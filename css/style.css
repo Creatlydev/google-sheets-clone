@@ -69,6 +69,11 @@ body {
     position: relative;
 }
 
+.head-cell.highlighted {
+    background-color: #d3e3fd;
+    font-weight: 700;
+}
+
 .fixed {
     grid-column-start: 1;
     border-width: 3px;
@@ -108,6 +113,7 @@ body {
     text-wrap: nowrap;
     cursor: default;
     background-color: #f2f2f2;
+    overflow: hidden;
 }
 
 .value {

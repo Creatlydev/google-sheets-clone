@@ -5,11 +5,14 @@ import {
   setCurrentEditableCell,
 } from '../../GlobalState.js'
 import {
+  $,
+  $$,
   removeAttribute,
   removeClass,
   setAttribute,
   setStyles,
 } from '../../utils/DOMUtils.js'
+import { CELL_CLASSES, HEADER_CLASSES } from '../../constants.js'
 import { gridState } from './GridState.js'
 
 // Añade la clases a la celda
@@ -49,6 +52,7 @@ export const highlightInputCell = (cell) => {
   if (currentActiveCell !== cell) {
     currentActiveCell && removeClass('is-active', currentActiveCell)
     addClassCell(cell, 'is-active')
+    highlightHeaderCells([cell])
     setCurrentActiveCell(cell)
     updateCell(getCurrentEditableCell()) // !!
     disableCellEditing(cell)
@@ -99,4 +103,37 @@ const updateCell = (cell) => {
   } catch (error) {
     console.error('Error al actualizar la celda:', error)
   }
+}
+
+// HIGHLIGHTING HEADERS CELLS
+// Resalta los encabezados correspondientes a las celdas seleccionadas
+export const highlightHeaderCells = (cells) => {
+  // Elimina el resaltado de los encabezados anteriores
+  $$(
+    `.horizontal-head > .${HEADER_CLASSES.HEAD_CELL}.${CELL_CLASSES.HIGHLIGHTED}`
+  ).forEach((cell) => {
+    cell.classList.remove(`${CELL_CLASSES.HIGHLIGHTED}`)
+  })
+  $$(
+    `.vertical-head > .${HEADER_CLASSES.HEAD_CELL}.${CELL_CLASSES.HIGHLIGHTED}`
+  ).forEach((cell) => {
+    cell.classList.remove(`${CELL_CLASSES.HIGHLIGHTED}`)
+  })
+  // Resalta los encabezados de las columnas y filas correspondientes
+  cells.forEach((cell) => {
+    const row = cell.dataset.row
+    const col = cell.dataset.col
+    const $columnHeader = $(
+      `.horizontal-head > .${HEADER_CLASSES.HEAD_CELL}[index='${col}']`
+    )
+    const $rowHeader = $(
+      `.vertical-head > .${HEADER_CLASSES.HEAD_CELL}[index='${row}']`
+    )
+    selectHeaderCell($columnHeader)
+    selectHeaderCell($rowHeader)
+  })
+}
+
+const selectHeaderCell = (header) => {
+  header.classList.add(`${CELL_CLASSES.HIGHLIGHTED}`)
 }

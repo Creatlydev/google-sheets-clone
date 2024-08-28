@@ -1,4 +1,7 @@
-import { setCurrentActiveCell } from '../../GlobalState.js'
+import {
+  getCurrentActiveCell,
+  setCurrentActiveCell,
+} from '../../GlobalState.js'
 import { $, setStyles } from '../../utils/DOMUtils.js'
 import {
   clearContentCell,
@@ -53,20 +56,22 @@ export function initGridEventListeners() {
   $spreadSheet.addEventListener('focusout', (event) => {
     const target = event.relatedTarget
 
-    if (target) {
-      const $cellInput = target.closest('.cell-input')
-      if ($cellInput) highlightInputCell($cellInput)
-    } else {
+    if (!target) {
       const $cellInput = event.target.closest('.cell-input')
       if (isEditableCell($cellInput)) {
         disableCellEditing($cellInput, { force: true })
       }
     }
-  })
 
-  $spreadSheet.addEventListener('focusin', (event) => {
-    const $cellInput = event.target.closest('.cell-input')
-    if (!$cellInput) return
-    highlightInputCell($cellInput)
+    // ======
+    $spreadSheet.addEventListener(
+      'focusin',
+      (event) => {
+        const $cellInput = event.target.closest('.cell-input')
+        if (!$cellInput) return
+        highlightInputCell($cellInput)
+      },
+      { once: true }
+    )
   })
 }
