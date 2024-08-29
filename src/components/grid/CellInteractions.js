@@ -56,6 +56,7 @@ export const highlightInputCell = (cell) => {
     setCurrentActiveCell(cell)
     updateCell(getCurrentEditableCell()) // !!
     disableCellEditing(cell)
+    // cell.click()
   }
 }
 

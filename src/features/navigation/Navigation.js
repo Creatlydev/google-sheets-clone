@@ -2,6 +2,7 @@ import { $, removeClass } from '../../utils/DOMUtils.js'
 import {
   getCurrentActiveCell,
   setCurrentActiveCell,
+  isSelectingNow,
 } from '../../GlobalState.js'
 import {
   enableEditingCell,
@@ -11,7 +12,7 @@ import {
 
 class Navigation {
   constructor() {
-    this.grid = $('.spreadsheet')
+    this.grid = $('.js-spreadsheet')
     this.init()
   }
 
@@ -21,6 +22,7 @@ class Navigation {
 
   handleKeydown(event) {
     const { key } = event
+    console.log(event.target)
     const currentActiveCell = getCurrentActiveCell()
     const switchKey = {
       ArrowUp: [-1, 0],
@@ -33,13 +35,16 @@ class Navigation {
     if (['Tab', 'Enter'].includes(key)) {
       event.preventDefault()
       if (key === 'Tab') {
-        this.moveToCell(
-          ...switchKey[switchKey['Tab'] ? 'ArrowLeft' : 'ArrowRight']
+        Navigation.moveToCell(
+          ...switchKey[switchKey['Tab'] ? 'ArrowLeft' : 'ArrowRight'],
+          this.grid
         )
       } else {
+        console.log(isSelectingNow())
         if (isEditableCell(currentActiveCell) || switchKey['Enter']) {
-          this.moveToCell(
-            ...switchKey[switchKey['Enter'] ? 'ArrowUp' : 'ArrowDown']
+          Navigation.moveToCell(
+            ...switchKey[switchKey['Enter'] ? 'ArrowUp' : 'ArrowDown'],
+            this.grid
           )
         } else {
           enableEditingCell(currentActiveCell)
@@ -48,13 +53,14 @@ class Navigation {
     } else {
       if (switchKey[key]) {
         if (!isEditableCell(currentActiveCell)) {
-          this.moveToCell(...switchKey[key])
+          event.preventDefault()
+          Navigation.moveToCell(...switchKey[key], this.grid)
         }
       }
     }
   }
 
-  moveToCell(rowOffset, colOffset) {
+  static moveToCell(rowOffset, colOffset, grid) {
     const currentActiveCell = getCurrentActiveCell()
     if (!currentActiveCell) return
 
@@ -64,7 +70,7 @@ class Navigation {
     const newRow = parseInt(currentRow) + rowOffset
     const newCol = parseInt(currentCol) + colOffset
 
-    const newCell = this.grid.querySelector(
+    const newCell = grid.querySelector(
       `[data-row='${newRow}'][data-col='${newCol}']`
     )
     removeClass('is-active', currentActiveCell)

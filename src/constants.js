@@ -6,7 +6,8 @@ export const CELL_CLASSES = {
 }
 
 export const HEADER_CLASSES = {
-  HEAD_CELL: 'head-cell'
+  HEAD_CELL: 'head-cell',
+  SELECTED: 'head-selected',
 }
 
 export const ROLES = {

@@ -35,6 +35,7 @@ body {
     height: 100vh;
     overflow: auto;
     scrollbar-width: thin;
+    position: relative;
 }
 
 .horizontal-head,
@@ -43,7 +44,7 @@ body {
     text-align: center;
     grid-column-start: 2;
     position: sticky;
-    z-index: 100;
+    z-index: 9999;
 }
 
 .horizontal-head {
@@ -74,13 +75,19 @@ body {
     font-weight: 700;
 }
 
+.head-cell.head-selected {
+    background-color: #0b57d0;
+    color: #fff;
+    font-weight: 700;
+}
+
 .fixed {
     grid-column-start: 1;
     border-width: 3px;
     position: sticky;
     top: 0;
     left: 0;
-    z-index: 200;
+    z-index: 99999;
 }
 
 .spreadsheet {
@@ -128,4 +135,15 @@ body {
 .cell-input.is-active {
     border: 2px solid #1a73e8;
     outline: none;
+}
+
+.selected-box {
+    position: absolute;
+    height: 100%;
+    pointer-events: none;
+    position: absolute;
+    background-color: rgba(14, 101, 235, .1);
+    /* opacity: .1; */
+    z-index: 999;
+    border: 1px solid #0b57d0;
 }
