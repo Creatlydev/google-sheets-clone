@@ -6,16 +6,21 @@ import {
   createElement,
   getAttribute,
   removeClass,
-  setStyles,
+  setStyles
 } from '../../utils/DOMUtils.js'
 import { highlightInputCell } from '../../components/grid/CellInteractions.js'
 import { isSelectingNow, setIsSelectingNow } from '../../GlobalState.js'
+import { emit } from '../../utils/EventUtils.js'
 
 export default class Selection {
   constructor() {
+    this.body = document.body
     this.grid = $('#grid-container')
+    this.coping = null
     this.spreadsheet = this.grid.querySelector('.js-spreadsheet')
     this.selectedBox = null
+    this.idColumnSelected = null
+    this.idRowSelected = null
     this.init()
   }
 
@@ -23,6 +28,12 @@ export default class Selection {
     this.grid.addEventListener('mousedown', (event) =>
       this.handleMouseDown(event)
     )
+    this.body.addEventListener('copy', () => {
+      emit('copy-cells', {
+        toCopy: this.coping,
+        idsSelected: { row: this.idRowSelected, column: this.idColumnSelected }
+      })
+    })
   }
 
   handleMouseDown(event) {
@@ -46,6 +57,9 @@ export default class Selection {
         this.grid.removeChild(selectedBox)
         this.removeSelectedClass()
         setIsSelectingNow(false)
+        this.idColumnSelected = null
+        this.idRowSelected = null
+        this.coping = null
       }
     }
   }
@@ -55,7 +69,7 @@ export default class Selection {
       left: `${box.left}px`,
       top: `${box.bottom}px`,
       width: `${box.right - box.left}px`,
-      height: `${this.spreadsheet.clientHeight}px`,
+      height: `${this.spreadsheet.clientHeight}px`
     })
     this.addSelectedClass(headCell)
 
@@ -64,6 +78,8 @@ export default class Selection {
     const $cellInput = $(
       `.cell-input[data-row='0'][data-col='${columnSelected}']`
     )
+    this.coping = 'column'
+    this.idColumnSelected =  columnSelected
     return $cellInput
   }
 
@@ -72,13 +88,15 @@ export default class Selection {
       left: `${box.right}px`,
       top: `${box.top}px`,
       width: `${this.spreadsheet.clientWidth}px`,
-      height: `${box.bottom - box.top}px`,
+      height: `${box.bottom - box.top}px`
     })
     this.addSelectedClass(headCell)
 
     // Highlight cell in row selected
     const rowSelected = getAttribute(headCell, 'index')
     const $cellInput = $(`.cell-input[data-row='${rowSelected}'][data-col='0']`)
+    this.coping = 'row'
+    this.idRowSelected = rowSelected
     return $cellInput
   }
 

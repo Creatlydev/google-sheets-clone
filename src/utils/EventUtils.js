@@ -6,3 +6,10 @@ export function delegateEvent(container, eventType, selector, handler) {
     }
   })
 }
+
+
+export function emit(event, obj) {
+    const customEvent = new Event(event);
+    customEvent.detail = obj;
+    document.body.dispatchEvent(customEvent);
+}

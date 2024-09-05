@@ -22,7 +22,6 @@ class Navigation {
 
   handleKeydown(event) {
     const { key } = event
-    console.log(event.target)
     const currentActiveCell = getCurrentActiveCell()
     const switchKey = {
       ArrowUp: [-1, 0],
@@ -40,7 +39,6 @@ class Navigation {
           this.grid
         )
       } else {
-        console.log(isSelectingNow())
         if (isEditableCell(currentActiveCell) || switchKey['Enter']) {
           Navigation.moveToCell(
             ...switchKey[switchKey['Enter'] ? 'ArrowUp' : 'ArrowDown'],

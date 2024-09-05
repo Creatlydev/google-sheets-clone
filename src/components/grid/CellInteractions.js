@@ -91,8 +91,13 @@ const updateCell = (cell) => {
 
       const contentValue = value.textContent
       let contentComputedValue = contentValue
-      if (contentValue.startsWith('=')) {
-        contentComputedValue = eval(contentValue.slice(1))
+      try {
+        if (contentValue.startsWith('=')) {
+          contentComputedValue = eval(contentValue.slice(1))
+        }
+      } catch (error) {
+        console.error('Error al realizar la operacion ')
+        contentComputedValue = '!#Error#¡'
       }
       computedValue.textContent = contentComputedValue
 
@@ -102,7 +107,7 @@ const updateCell = (cell) => {
       }
     }
   } catch (error) {
-    console.error('Error al actualizar la celda:', error)
+    console.error('Error al actualizar la celda: ', error.message)
   }
 }
 
