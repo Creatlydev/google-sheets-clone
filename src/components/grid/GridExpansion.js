@@ -2,6 +2,7 @@ import { INITIAL_GRID } from '../../Constants.js'
 import { gridState } from './GridState.js'
 import { $, createElement, setStyles } from '../../utils/DOMUtils.js'
 import { createCellContainer } from './Grid.js'
+import { getInstanceSelection, isSelectingNow } from '../../GlobalState.js'
 
 const $gridContainer = $('#grid-container')
 const $spreadSheet = $('.js-spreadsheet')
@@ -43,7 +44,7 @@ function moveSentinel() {
 
 export function initGridExpansionObserver() {
   const $verticalSentinel = createElement('div', {
-    class: 'sentinel-vertical',
+    class: 'sentinel-vertical'
   })
 
   $gridContainer.appendChild($verticalSentinel)
@@ -52,10 +53,16 @@ export function initGridExpansionObserver() {
     (entries) => {
       if (entries[0].isIntersecting) {
         addRows()
+        if (isSelectingNow()) {
+          const instanceSelection = getInstanceSelection()
+          if (instanceSelection.coping === 'column') {
+            instanceSelection.selectedColumn()
+          }
+        }
       }
     },
     {
-      threshold: 0,
+      threshold: 0
     }
   )
 

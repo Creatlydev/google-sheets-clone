@@ -4,6 +4,7 @@ import { initGridEventListeners } from './components/grid/GridEvents.js'
 import { handleGlobalEvents } from './GlobalEvents.js'
 import Navigation from './features/navigation/Navigation.js'
 import Selection from './features/selection/Selection.js'
+import { setInstanceSelection } from './GlobalState.js'
 
 window.addEventListener('DOMContentLoaded', () => {
   createInitialGrid()
@@ -11,5 +12,6 @@ window.addEventListener('DOMContentLoaded', () => {
   handleGlobalEvents()
   initGridEventListeners()
   new Navigation() // Navegacion por las celdas
-  new Selection()
+  const instanceSelection = new Selection() 
+  setInstanceSelection(instanceSelection)
 })

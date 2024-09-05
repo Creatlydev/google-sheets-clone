@@ -21,6 +21,7 @@ export default class Selection {
     this.selectedBox = null
     this.idColumnSelected = null
     this.idRowSelected = null
+    this.headSelected = null
     this.init()
   }
 
@@ -39,14 +40,15 @@ export default class Selection {
   handleMouseDown(event) {
     const target = event.target.closest(`.${HEADER_CLASSES.HEAD_CELL}`)
     if (target) {
+      this.headSelected = target
       this.createSelectedBox()
       const box = target.getBoundingClientRect()
       let $cellInput
       const horizontalHead = target.closest('.horizontal-head')
       if (horizontalHead) {
-        $cellInput = this.selectedColumn(box, target)
+        $cellInput = this.selectedColumn()
       } else {
-        $cellInput = this.selectedRow(box, target)
+        $cellInput = this.selectedRow()
       }
 
       highlightInputCell($cellInput)
@@ -64,9 +66,12 @@ export default class Selection {
     }
   }
 
-  selectedColumn(box, headCell) {
+  selectedColumn() {
+    const box = this.headSelected.getBoundingClientRect()
+    const headCell = this.headSelected
+    const scrollLeft = this.grid.scrollLeft
     setStyles(this.selectedBox, {
-      left: `${box.left}px`,
+      left: `${box.left + scrollLeft}px`,
       top: `${box.bottom}px`,
       width: `${box.right - box.left}px`,
       height: `${this.spreadsheet.clientHeight}px`
@@ -83,10 +88,13 @@ export default class Selection {
     return $cellInput
   }
 
-  selectedRow(box, headCell) {
+  selectedRow() {
+    const box = this.headSelected.getBoundingClientRect()
+    const headCell = this.headSelected
+    const scrollTop = this.grid.scrollTop
     setStyles(this.selectedBox, {
       left: `${box.right}px`,
-      top: `${box.top}px`,
+      top: `${box.top + scrollTop}px`,
       width: `${this.spreadsheet.clientWidth}px`,
       height: `${box.bottom - box.top}px`
     })
