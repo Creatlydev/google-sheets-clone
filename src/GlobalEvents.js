@@ -5,6 +5,11 @@ import { times } from './utils/Helpers.js'
 export const handleGlobalEvents = () => {
   const $body = document.body
 
+  // evento que impide el comportamiento por defecto cuando el navegador detecta que se quiere arrastrar algun elemento
+  $body.addEventListener('dragstart', (event) => {
+    event.preventDefault()
+  })
+
   $body.addEventListener('contextmenu', (event) => event.preventDefault())
 
   // Evento que se emitira cuando se active el evento copy en el body

@@ -1,3 +1,4 @@
+import { startCellSelection } from '../../features/selection/BoxSelection.js'
 import {
   getCurrentActiveCell,
   setCurrentActiveCell,
@@ -23,6 +24,7 @@ export function initGridEventListeners() {
     const $computedValue = $cellInput.querySelector('.computed-value')
 
     highlightInputCell($cellInput)
+    !isEditableCell($cellInput) && startCellSelection(event)
   })
 
   // Maneja el evento keydown en la hoja de cálculo

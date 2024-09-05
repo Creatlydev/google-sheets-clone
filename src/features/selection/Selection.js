@@ -56,7 +56,7 @@ export default class Selection {
     } else {
       const selectedBox = $('.selected-box')
       if (isSelectingNow()) {
-        this.grid.removeChild(selectedBox)
+        document.body.removeChild(selectedBox)
         this.removeSelectedClass()
         setIsSelectingNow(false)
         this.idColumnSelected = null
@@ -111,7 +111,7 @@ export default class Selection {
   createSelectedBox() {
     if (!$('.selected-box')) {
       this.selectedBox = createElement('div', { class: 'selected-box' })
-      this.grid.appendChild(this.selectedBox)
+      document.body.appendChild(this.selectedBox)
     }
   }
 
